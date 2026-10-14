@@ -138,6 +138,11 @@ const sign=H(`<div class="abs" style="width:300px;height:330px"><svg viewBox="0 
 const ch1=H('<div class="abs glass chip">Votre terrain</div>'), ch2=H('<div class="abs glass chip">Votre domicile</div>');
 
 /* ================= scene 2 : problem ================= */
+const mais=H('<div class="abs ser" style="font-size:140px;white-space:nowrap">Mais…</div>');
+const toujours=H('<div class="abs label" style="font-size:38px;color:#ffb3c0">IL Y A TOUJOURS</div>');
+const ouAlors=H('<div class="abs ser" style="font-size:140px;white-space:nowrap">Ou alors…</div>');
+const dispo=H('<div class="abs label" style="font-size:40px">DISPONIBLES SUR</div>');
+const maisAlors=H('<div class="abs ser" style="font-size:140px;white-space:nowrap">Mais alors…</div>');
 const prob=H('<div class="abs" style="width:1600px;height:260px"></div>');
 ['#ff3b5c','#4cc3ff','#fff'].forEach(c=>{const d=document.createElement('div');d.className='big';d.style.cssText=`position:absolute;left:0;right:0;top:0;text-align:center;font-size:190px;color:${c};mix-blend-mode:${c=='#fff'?'normal':'screen'}`;d.textContent='UN PROBLÈME';prob.appendChild(d)});
 const probSub=H('<div class="abs ser" style="font-size:80px;white-space:nowrap;color:#ffd0d8">aussi fâcheux…</div>');
@@ -149,8 +154,8 @@ const blink=H('<div class="abs" style="width:18px;height:18px;border-radius:50%;
 
 /* ================= scene 3 : good news / solution ================= */
 const bonne=H('<div class="abs big" style="font-size:190px;text-align:center"><span class="gr">BONNE</span><br><span>NOUVELLE</span></div>');
-const notif=H(`<div class="abs glass" id="notif"><div class="ap"><img src="assets/house-dark.png"></div><div><div class="t1">DJAM'S REAL ESTATE · MAINTENANT</div><div class="t2">Nous ne sommes pas venus seuls…</div></div></div>`);
-const sol=H('<div class="abs big" style="font-size:170px;text-align:center"><span class="ser" style="font-size:100px;letter-spacing:0;font-weight:700">avec</span><br><span class="gr">LA SOLUTION</span></div>');
+const notif=H(`<div class="abs glass" id="notif"><div class="ap"><img src="assets/house-dark.png"></div><div><div class="t1">DJAM'S REAL ESTATE · MAINTENANT</div><div class="t2">Djam's Real Estate n'est pas venu seul…</div></div></div>`);
+const sol=H('<div class="abs big" style="font-size:170px;text-align:center"><span class="ser" style="font-size:100px;letter-spacing:0;font-weight:700">avec</span><br><span class="gr" id="solw" style="display:inline-block">LA SOLUTION</span></div>');
 const check=H('<div class="abs" style="width:260px;height:260px"><svg viewBox="0 0 100 100" width="260" height="260"><defs><filter id="ck"><feGaussianBlur stdDeviation="3"/></filter></defs><circle cx="50" cy="50" r="44" fill="none" stroke="#4cc3ff" stroke-width="5" opacity=".5"/><path id="ckp" d="M28 52 L44 67 L74 34" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>');
 const ckp=check.querySelector('#ckp'); ckp.style.strokeDasharray=80;
 
@@ -175,7 +180,7 @@ const numLab=H('<div class="abs label">WHATSAPP · APPEL DIRECT</div>');
 /* ================= scene 6 : CTA over terrain ================= */
 const s6=H('<div class="full" id="s6"></div>'); const cv6=mkCanvas(s6,1920,1080);
 s6.appendChild(Object.assign(document.createElement('div'),{className:'full',style:'background:linear-gradient(90deg,rgba(3,12,40,.9),rgba(3,12,40,.35) 60%,rgba(3,12,40,.15)),linear-gradient(180deg,rgba(0,0,0,0) 60%,rgba(0,0,0,.6))'}));
-const att=H('<div class="abs label" style="font-size:36px">N\'ATTENDEZ PLUS</div>');
+const att=H('<div class="abs label" style="font-size:46px">N\'ATTENDEZ PLUS</div>');
 const res=H('<div class="abs big" style="font-size:124px;text-align:left;line-height:1.02">RÉSERVEZ<br>VOTRE <span class="gr">TERRAIN</span></div>');
 const btn=H('<div class="abs" id="btn">Dès maintenant →</div>');
 const pin=H('<div class="abs" style="width:150px;height:150px"><img src="assets/emoji/1f4cd.svg" style="width:150px;filter:drop-shadow(0 12px 20px rgba(0,0,0,.6))"></div>');
@@ -247,6 +252,10 @@ window.render=function(t){
     std(ch1,t,10.3,12.3,{x:-430,y:190}); std(ch2,t,10.9,12.3,{x:70,y:190}); }
 
   /* ---- S2 problem (12.4 – 18.6) ---- */
+  std(mais,t,12.85,13.72,{y:-40,dy:50,so:.8}); std(toujours,t,13.3,13.72,{y:90,dy:30});
+  std(maisAlors,t,30.25,30.95,{y:-20,dy:50,so:.8});
+  std(ouAlors,t,8.3,9.72,{y:-20,dy:50,so:.8});
+  std(dispo,t,34.0,36.4,{y:-330,dy:30});
   { const L=life(t,13.7,15.6,.3,.35); const g=t>13.7&&t<15.6?(Math.sin(t*40)>.6?1:0)+(t<14.0?1:0):0;
     set(prob,{y:-80,s:lerp(1.4,1,eo(p(t,13.7,14))),o:L.on?L.i*(1-L.o):0,bl:L.o*20});
     [...prob.children].forEach((c,k)=>{c.style.transform=k<2?`translate(${(k?1:-1)*(4+g*14+Math.sin(t*61+k)*3)}px,${g*(k?-3:3)}px)`:`translate(${g*(Math.sin(t*97)*6)}px,0)`});
@@ -262,8 +271,9 @@ window.render=function(t){
   /* ---- S3 good news (18.7 – 23.9) ---- */
   $('flash').style.opacity=p(t,18.72,18.8)*(1-p(t,18.8,19.6))+0.5*p(t,22.75,22.8)*(1-p(t,22.8,23.3))+p(t,45.3,45.38)*(1-p(t,45.38,46.1));
   std(bonne,t,18.75,19.75,{dy:0,s0:1.5,bl0:24,so:.6});
-  { const L=life(t,19.65,21.6,.6,.4); set(notif,{y:lerp(-700,-60,L.i)+L.o*-80,s:1-L.o*.1,o:L.on?(1-L.o):0,bl:L.o*20}); }
-  std(sol,t,21.6,23.85,{y:60,dy:80,s0:.7});
+  { const L=life(t,19.65,22.15,.6,.4); set(notif,{y:lerp(-700,-60,L.i)+L.o*-80,s:1-L.o*.1,o:L.on?(1-L.o):0,bl:L.o*20}); }
+  std(sol,t,22.12,23.85,{y:60,dy:80,s0:.7});
+  { const q=back(p(t,22.72,23.12)); $('solw').style.transform=`scale(${cl(q,0,2)})`; $('solw').style.opacity=p(t,22.72,22.85); }
   { const L=life(t,22.7,23.85,.3,.4); set(check,{x:770,y:100,s:back(p(t,22.7,23.1)),o:L.on?(1-L.o):0,bl:L.o*20}); ckp.style.strokeDashoffset=80*(1-eo(p(t,22.85,23.3))); }
   conf.forEach(c=>{const lt=t-c.t0;if(lt<0||lt>2.6){c.e.style.visibility='hidden';return}c.e.style.visibility='visible';
     const x=960+Math.cos(c.a)*c.v*lt*(1-lt*.25), y=480+Math.sin(c.a)*c.v*lt*(1-lt*.25)+380*lt*lt;
@@ -280,7 +290,7 @@ window.render=function(t){
 
   /* ---- S5 contact (30.0 – 40.8) ---- */
   std(how,t,30.9,32.75,{dy:60,s0:.8});
-  std(simple,t,32.95,34.4,{dy:50});
+  std(simple,t,32.95,34.1,{dy:50});
   { const L=life(t,34.55,36.4,.6,.4); set(wa,{x:-420,y:lerp(500,-20,L.i)+L.o*-60,ry:(1-L.i)*25,o:L.on?L.i*(1-L.o):0,bl:(1-L.i)*14+L.o*20});
     $('wab').style.opacity=p(t,34.9,35.05); $('wame').style.opacity=p(t,35.6,35.75); $('wame').style.transform=`scale(${back(p(t,35.6,35.95))})`; }
   { const L=life(t,35.35,36.4,.6,.4); set(call,{x:470,y:lerp(500,-20,L.i)+L.o*-60,ry:(1-L.i)*-25,o:L.on?L.i*(1-L.o):0,bl:(1-L.i)*14+L.o*20});
@@ -315,8 +325,8 @@ window.render=function(t){
   }
 
   /* ---- reactions ---- */
-  REACTS.forEach(r=>{const lt=t-r.t0;if(lt<0||lt>1.9){r.e.style.visibility='hidden';return}
-    const i=back(p(lt,0,.4)), o=ei(p(lt,1.45,1.9));
+  REACTS.forEach(r=>{const lt=t-r.t0;if(lt<0||lt>1.5){r.e.style.visibility='hidden';return}
+    const i=back(p(lt,0,.4)), o=ei(p(lt,1.1,1.5));
     set(r.e,{x:r.x,y:r.y-lt*30-o*60,s:i*(1+0.06*Math.sin(lt*14)*Math.exp(-lt*2)),rz:Math.sin(lt*9)*12*Math.exp(-lt*2.2),o:cl(lt*8)*(1-o)});
     r.ring.style.transform=`scale(${.6+p(lt,0,.6)*1.1})`;r.ring.style.opacity=(1-p(lt,0,.6))*.9;});
 
