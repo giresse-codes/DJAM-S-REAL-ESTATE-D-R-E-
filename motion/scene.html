@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>DRE Motion</title>
+<style>
+@font-face{font-family:M;src:url(assets/montserrat-latin-400-normal.woff2);font-weight:400}
+@font-face{font-family:M;src:url(assets/montserrat-latin-600-normal.woff2);font-weight:600}
+@font-face{font-family:M;src:url(assets/montserrat-latin-800-normal.woff2);font-weight:800}
+@font-face{font-family:P;src:url(assets/playfair-display-latin-700-italic.woff2);font-weight:700;font-style:italic}
+:root{--blue:#1f7fe0;--cyan:#4cc3ff;--navy:#06122e}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#02050c;font-family:M,sans-serif;color:#fff}
+#stage{position:absolute;inset:0;overflow:hidden;perspective:1800px}
+.abs{position:absolute;left:50%;top:50%;will-change:transform,opacity,filter}
+.blob{position:absolute;border-radius:50%;left:0;top:0}
+#vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 45%,rgba(0,0,0,.75) 100%);pointer-events:none}
+.glass{background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.03));border:1.5px solid rgba(255,255,255,.28);box-shadow:0 0 40px rgba(76,195,255,.25),inset 0 1px 0 rgba(255,255,255,.35);backdrop-filter:blur(18px)}
+/* chips */
+#chips{display:flex;gap:22px;transform:translate(-50%,-50%)}
+.chip{display:flex;align-items:center;gap:12px;padding:20px 32px;border-radius:22px;font-weight:600;font-size:30px;white-space:nowrap}
+.chip svg{width:30px;height:30px}
+#cursor{width:46px;height:46px;left:0;top:0}
+/* prompt */
+#prompt{width:1240px;height:250px;border-radius:40px;transform:translate(-50%,-50%);padding:46px 56px}
+#ptext{font-size:50px;font-weight:600;letter-spacing:-.5px}
+#ptext b{color:var(--cyan);font-weight:800}
+#caret{display:inline-block;width:4px;height:54px;background:var(--cyan);vertical-align:-8px;margin-left:4px}
+#pplus{position:absolute;left:56px;bottom:40px;font-size:56px;font-weight:400;opacity:.85}
+#psend{position:absolute;right:46px;bottom:36px;width:70px;height:70px;border-radius:20px;background:linear-gradient(135deg,#4cc3ff,#1f6fe0);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(76,195,255,.7)}
+#pmeta{position:absolute;right:140px;bottom:52px;font-size:26px;opacity:.7;font-weight:600}
+/* website card */
+#site{width:1360px;height:780px;border-radius:44px;overflow:hidden;transform-style:preserve-3d;border:2px solid rgba(140,210,255,.55)}
+#siteBg{position:absolute;inset:0}
+#siteNav{position:absolute;left:60px;top:44px;right:60px;display:flex;align-items:center;gap:56px;font-size:26px;font-weight:600}
+#siteNav img{height:62px}
+#siteNav .sp{flex:1}
+#siteNav .cta{padding:14px 28px;border-radius:16px;border:1.5px solid rgba(255,255,255,.6)}
+#siteH{position:absolute;left:80px;top:250px;font-size:96px;font-weight:800;line-height:1.02;letter-spacing:-2px}
+#siteH span{display:block}
+#siteSub{position:absolute;left:84px;top:500px;font-size:34px;font-weight:400;opacity:.85;letter-spacing:1px}
+#siteBtn{position:absolute;left:84px;top:590px;padding:22px 44px;border-radius:20px;background:#fff;color:#0a2a66;font-size:30px;font-weight:800}
+#sweep{position:absolute;top:-20%;width:280px;height:140%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);transform:rotate(18deg)}
+#siteHouse{position:absolute;right:40px;bottom:60px;width:620px;opacity:.9;filter:drop-shadow(0 0 30px rgba(76,195,255,.6))}
+/* service cards */
+.svc{width:520px;height:600px;border-radius:40px;padding:56px 48px;transform-origin:50% 100%}
+.svc .ic{width:120px;height:120px;border-radius:32px;background:linear-gradient(135deg,#4cc3ff,#1f5fd0);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(76,195,255,.6)}
+.svc .ic svg{width:66px;height:66px}
+.svc .n{margin-top:40px;font-size:24px;letter-spacing:6px;opacity:.6;font-weight:600}
+.svc h3{margin-top:14px;font-size:56px;font-weight:800;letter-spacing:-1px}
+.svc p{margin-top:22px;font-size:30px;line-height:1.4;opacity:.85}
+#svcTitle{transform:translate(-50%,-50%);font-size:34px;letter-spacing:12px;font-weight:600;white-space:nowrap;color:var(--cyan)}
+/* slogan */
+.sl{transform:translate(-50%,-50%);white-space:nowrap;text-align:center}
+.w{display:inline-block;margin:0 .14em}
+#sl1{font-size:120px;font-weight:800;letter-spacing:-3px}
+#sl2{font-family:P;font-style:italic;font-weight:700;font-size:118px}
+#sl2 .g{background:linear-gradient(90deg,#9fe0ff,#4cc3ff 40%,#1f7fe0);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 24px rgba(76,195,255,.55))}
+/* end */
+#logo{width:760px;transform:translate(-50%,-50%)}
+#tel{transform:translate(-50%,-50%);display:flex;align-items:center;gap:26px;padding:22px 46px 22px 24px;border-radius:999px;white-space:nowrap}
+#tel .ph{width:78px;height:78px;border-radius:50%;background:linear-gradient(135deg,#4cc3ff,#1f6fe0);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(76,195,255,.8)}
+#tel .num{font-size:54px;font-weight:800;letter-spacing:1px}
+#tel .lab{font-size:22px;letter-spacing:5px;opacity:.7;font-weight:600;display:block}
+#tag{transform:translate(-50%,-50%);font-size:28px;letter-spacing:6px;white-space:nowrap;opacity:.8;font-weight:600}
+#flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(140,215,255,.9),rgba(31,127,224,0) 60%);opacity:0}
+#lines{position:absolute;inset:0}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bg">
+    <div class="blob" id="b1"></div><div class="blob" id="b2"></div><div class="blob" id="b3"></div><div class="blob" id="b4"></div>
+  </div>
+  <svg id="lines" viewBox="0 0 1920 1080"></svg>
+
+  <!-- S1 house mark -->
+  <img class="abs" id="house" src="assets/house-dark.png" style="width:820px">
+
+  <!-- S2 chips -->
+  <div class="abs" id="chips">
+    <div class="chip glass"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Terrains bâtis</div>
+    <div class="chip glass"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18l6-8 4 5 3-3 7 6z"/><circle cx="17" cy="6" r="2"/></svg>Terrains non bâtis</div>
+    <div class="chip glass"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M15 8l2 2"/></svg>Achat</div>
+    <div class="chip glass"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>Vente</div>
+    <div class="chip glass"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M10 21v-4h4v4"/></svg>Gestion</div>
+  </div>
+
+  <!-- S3 prompt -->
+  <div class="abs glass" id="prompt">
+    <div id="ptext"><span id="ptyped"></span><span id="caret"></span></div>
+    <div id="pplus">+</div>
+    <div id="pmeta">D.R.E · Cameroun</div>
+    <div id="psend"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+  </div>
+
+  <!-- S4 website-like card -->
+  <div class="abs" id="site">
+    <div id="siteBg"></div>
+    <img id="siteHouse" src="assets/house-dark.png">
+    <div id="siteNav"><img src="assets/house-dark.png"><span>Accueil</span><span>Terrains</span><span>Gestion</span><span class="sp"></span><span class="cta">Contact</span></div>
+    <div id="siteH"><span>Terrains bâtis</span><span>&amp; non bâtis</span></div>
+    <div id="siteSub">ACHAT · VENTE · GESTION IMMOBILIÈRE</div>
+    <div id="siteBtn">Découvrir</div>
+    <div id="sweep"></div>
+  </div>
+
+  <!-- S5 services -->
+  <div class="abs" id="svcTitle">NOS SERVICES</div>
+  <div class="abs svc glass" id="s1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M15 8l2 2"/></svg></div><div class="n">01</div><h3>Achat</h3><p>Trouvez le terrain idéal, bâti ou non bâti, au Cameroun.</p></div>
+  <div class="abs svc glass" id="s2"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></div><div class="n">02</div><h3>Vente</h3><p>Valorisez et vendez votre terrain ou votre maison.</p></div>
+  <div class="abs svc glass" id="s3"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><circle cx="12" cy="14" r="2.2"/></svg></div><div class="n">03</div><h3>Gestion</h3><p>Confiez-nous la gestion de vos biens immobiliers.</p></div>
+
+  <!-- S6 slogan -->
+  <div class="abs sl" id="sl1"><span class="w">Bâtir</span><span class="w">aujourd'hui,</span></div>
+  <div class="abs sl" id="sl2"><span class="w">impacter</span><span class="w">pour</span><span class="w g">l'éternité.</span></div>
+
+  <!-- S7 end -->
+  <div id="flash"></div>
+  <img class="abs" id="logo" src="assets/logo-dark.png">
+  <div class="abs glass" id="tel"><div class="ph"><svg width="40" height="40" viewBox="0 0 24 24" fill="#fff"><path d="M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 013 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></div><div><span class="lab">APPELEZ-NOUS</span><span class="num">(+237) 690 54 61 11</span></div></div>
+  <div class="abs" id="tag">ACHAT · VENTE · GESTION DE BIENS IMMOBILIERS</div>
+
+  <img class="abs" id="cursor" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M5 3l14 8-6 1.5L10 19z' fill='white' stroke='black' stroke-width='1.2' stroke-linejoin='round'/></svg>">
+  <div id="vig"></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const p=(t,a,b)=>cl((t-a)/(b-a));                 // progress 0..1
+const eo=x=>1-Math.pow(1-x,4);                     // ease out quart
+const ei=x=>x*x*x;                                  // ease in cubic
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back=x=>{const c=1.7;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,x)=>a+(b-a)*x;
+// in/out envelope: returns {i: eased in progress, o: eased out progress}
+function env(t,a,ai,bo,b){return {i:eo(p(t,a,a+ai)),o:ei(p(t,b-bo,b))}}
+function set(el,{x=0,y=0,s=1,rx=0,ry=0,rz=0,z=0,o=1,bl=0,c=true}){
+  el.style.transform=`translate(-50%,-50%) translate3d(${x}px,${y}px,${z}px) rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${s})`;
+  el.style.opacity=o; el.style.filter=bl>0.05?`blur(${bl}px)`:'none';
+  el.style.visibility=o<=0.001?'hidden':'visible';
+}
+
+// background lines (light streaks) built once
+const svg=$('lines'); const NS='http://www.w3.org/2000/svg';
+svg.innerHTML=`<defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#4cc3ff" stop-opacity="0"/><stop offset=".5" stop-color="#9fe0ff"/><stop offset="1" stop-color="#4cc3ff" stop-opacity="0"/></linearGradient><filter id="gl"><feGaussianBlur stdDeviation="6"/></filter></defs>`;
+const arcs=[];
+for(let k=0;k<3;k++){const g=document.createElementNS(NS,'g');
+  ['gl',''].forEach(f=>{const pa=document.createElementNS(NS,'path');pa.setAttribute('fill','none');pa.setAttribute('stroke','url(#lg)');pa.setAttribute('stroke-width',f?10:2.5);if(f)pa.setAttribute('filter','url(#gl)');g.appendChild(pa)});
+  svg.appendChild(g);arcs.push(g)}
+
+const typed="Je cherche un <b>terrain</b> au Cameroun.";
+const plain=typed.replace(/<\/?b>/g,'');
+
+function typeHTML(n){ // first n plain chars, preserving <b>
+  let out='',cnt=0,i=0; while(i<typed.length&&cnt<n){ if(typed[i]=='<'){const j=typed.indexOf('>',i);out+=typed.slice(i,j+1);i=j+1;continue} out+=typed[i];i++;cnt++ }
+  if(out.includes('<b>')&&!out.includes('</b>'))out+='</b>'; return out }
+
+window.DURATION=28;
+window.render=function(t){
+  // ---------- background ----------
+  const warm=p(t,12.6,14.2)-p(t,15,15.8); // card color shift moment
+  const endG=eo(p(t,23,24.5));
+  const B=[[ $('b1'),1400,'31,127,224',  .9],[ $('b2'),1100,'76,195,255',.55],[ $('b3'),1600,'8,30,110',1],[ $('b4'),900,'160,225,255',.35]];
+  B.forEach(([el,R,col,a],k)=>{
+    const ang=t*0.22+k*1.7;
+    const cx=960+Math.cos(ang)*(520-k*60)+(k==3?Math.sin(t*.5)*300:0);
+    const cy=540+Math.sin(ang*1.3)*(260+k*30);
+    el.style.width=el.style.height=R+'px';
+    el.style.transform=`translate(${cx-R/2}px,${cy-R/2}px) scale(${1+0.15*Math.sin(t*.7+k)})`;
+    el.style.background=`radial-gradient(circle, rgba(${col},${a*(0.55+0.25*endG)}) 0%, rgba(${col},0) 65%)`;
+  });
+  $('bg').style.opacity=lerp(0,1,eo(p(t,0,1.6)));
+  // streak arcs
+  arcs.forEach((g,k)=>{const ph=t*0.35+k*2.1; const yy=540+Math.sin(ph)*260+k*90-90;
+    const d=`M -100 ${yy+200} C 500 ${yy-180+k*60}, 1300 ${yy+260-k*80}, 2020 ${yy-150}`;
+    g.querySelectorAll('path').forEach(pa=>pa.setAttribute('d',d));
+    g.style.opacity=(0.35+0.25*Math.sin(t*1.3+k))*(1-0.6*p(t,10.4,11))*(0.4+0.6*endG+0.6*(1-p(t,3,4)));
+  });
+
+  // ---------- S1 house mark 0 - 3.6 ----------
+  {const e=env(t,0.3,1.6,0.7,3.7); const h=$('house');
+   const o=e.i*(1-e.o);
+   set(h,{y:lerp(80,0,e.i)-e.o*40,s:lerp(.82,1,e.i)*(1+e.o*1.8),o,bl:(1-e.i)*24+e.o*30});
+   h.style.clipPath=`inset(${(1-eo(p(t,0.3,1.8)))*100}% 0 0 0)`;
+   h.style.filter+=` drop-shadow(0 0 ${20+30*Math.sin(t*3)**2}px rgba(76,195,255,.7))`; }
+
+  // ---------- S2 chips 3.4 - 7.5 ----------
+  {const ch=$('chips'); const kids=[...ch.children]; const e=env(t,3.4,0.6,0.6,7.5);
+   const vis=t>3.3&&t<7.6; ch.style.visibility=vis?'visible':'hidden';
+   ch.style.transform=`translate(-50%,-50%) translateY(${-e.o*160}px)`; ch.style.opacity=1-e.o; ch.style.filter=e.o>0.02?`blur(${e.o*20}px)`:'none';
+   kids.forEach((c,k)=>{const q=eo(p(t,3.4+k*0.12,4.2+k*0.12));
+     let sc=1, glow=0;
+     if(k==1){ sc=1-0.08*Math.sin(Math.PI*p(t,5.75,6.0)); glow=eo(p(t,5.85,6.2)); }
+     c.style.transform=`translateY(${(1-q)*90}px) scale(${lerp(.7,1,q)*sc})`; c.style.opacity=q; c.style.filter=q<.98?`blur(${(1-q)*14}px)`:'none';
+     c.style.background=glow?`linear-gradient(135deg,rgba(76,195,255,${.85*glow}),rgba(31,95,208,${.85*glow}))`:'';
+     c.style.boxShadow=glow?`0 0 ${60*glow}px rgba(76,195,255,${glow}),inset 0 1px 0 rgba(255,255,255,.4)`:'';
+   });
+   // cursor
+   const cu=$('cursor'); const cp=eio(p(t,4.6,5.75)); const cOut=p(t,6.5,7.0);
+   const tx=lerp(1500,770,cp), ty=lerp(900,560,cp);
+   const tx2=tx, ty2=ty;
+   // second leg: to send button of prompt (S3)
+   const cp2=eio(p(t,9.0,9.75)); const fx=lerp(1400,1492,cp2), fy=lerp(900,598,cp2);
+   const inS3=t>8.6;
+   const X=inS3?fx:tx2, Y=inS3?fy:ty2;
+   const press=1-0.18*Math.sin(Math.PI*(inS3?p(t,9.75,9.95):p(t,5.75,6.0)));
+   const co=inS3?(p(t,8.6,9.0)*(1-p(t,10.2,10.5))):(p(t,4.5,4.8)*(1-cOut));
+   cu.style.transform=`translate(${X}px,${Y}px) scale(${press})`; cu.style.opacity=co; cu.style.visibility=co>0?'visible':'hidden';
+  }
+
+  // ---------- S3 prompt 7.2 - 10.6 ----------
+  {const pr=$('prompt'); const e=env(t,7.2,0.7,0.6,10.7);
+   const n=Math.floor(cl((t-7.8)/1.15)*plain.length);
+   $('ptyped').innerHTML=typeHTML(n);
+   $('caret').style.opacity=(n<plain.length||Math.floor(t*2.5)%2)?1:0;
+   const sp=1-0.15*Math.sin(Math.PI*p(t,9.75,9.95));
+   $('psend').style.transform=`scale(${sp})`; $('psend').style.boxShadow=`0 0 ${30+50*p(t,9.8,10.1)}px rgba(76,195,255,.9)`;
+   set(pr,{y:lerp(120,0,e.i)-e.o*420,s:lerp(.9,1,e.i)*(1-e.o*.3),o:e.i*(1-e.o),bl:(1-e.i)*20+e.o*26,rx:(1-e.i)*25});
+  }
+
+  // ---------- S4 website card 10.2 - 15.6 ----------
+  {const s=$('site'); const ein=eo(p(t,10.2,11.8)); const eout=ei(p(t,14.9,15.7));
+   const drift=Math.sin(t*0.9)*3;
+   set(s,{y:lerp(380,0,ein)+eout*-80,z:lerp(-600,0,ein)+eout*500,ry:lerp(-38,drift,ein)+eout*45,rx:lerp(22,2,ein)-eout*10,rz:lerp(-6,0,ein),
+          o:cl(ein*1.4)*(1-eout),bl:(1-ein)*18+eout*30});
+   const sh=cl(warm);
+   $('siteBg').style.background=`radial-gradient(circle at ${70-20*sh}% ${30+20*sh}%, rgba(${lerp(31,90,sh)},${lerp(127,200,sh)},255,.95), rgba(${lerp(6,20,sh)},${lerp(18,60,sh)},${lerp(46,170,sh)},.96) 60%), #06122e`;
+   s.style.boxShadow=`0 0 ${80+60*sh}px rgba(76,195,255,${.35+.35*sh})`;
+   $('sweep').style.left=lerp(-400,1800,eio(p(t,12.0,13.4)))+'px';
+   const hp=eo(p(t,11.2,12.4)); $('siteHouse').style.transform=`translateY(${(1-hp)*60}px) scale(${lerp(.9,1,hp)+0.02*Math.sin(t)})`; $('siteHouse').style.opacity=hp*.9;
+   [...$('siteH').children].forEach((sp,k)=>{const q=eo(p(t,11.0+k*.15,11.8+k*.15)); sp.style.transform=`translateY(${(1-q)*60}px)`; sp.style.opacity=q; sp.style.filter=q<.98?`blur(${(1-q)*10}px)`:'none'});
+   const q2=eo(p(t,11.6,12.3)); $('siteSub').style.opacity=q2*.85; $('siteSub').style.transform=`translateY(${(1-q2)*30}px)`;
+   const q3=back(p(t,11.9,12.5)); $('siteBtn').style.transform=`scale(${cl(q3,0,2)})`; $('siteBtn').style.opacity=cl(p(t,11.9,12.1));
+   const q4=eo(p(t,10.9,11.6)); $('siteNav').style.opacity=q4; $('siteNav').style.transform=`translateY(${(1-q4)*-30}px)`;
+  }
+
+  // ---------- S5 services 15.3 - 19.7 ----------
+  {const xs=[-580,0,580];
+   const eT=env(t,15.3,0.7,0.5,19.6); set($('svcTitle'),{y:-420+(1-eT.i)*-40,o:eT.i*(1-eT.o),bl:(1-eT.i)*10+eT.o*12});
+   ['s1','s2','s3'].forEach((id,k)=>{const a=15.5+k*0.18; const q=eo(p(t,a,a+0.9)); const o2=ei(p(t,19.0+k*.08,19.6+k*.08));
+     const fl=Math.sin(t*1.4+k)*8;
+     set($(id),{x:xs[k]+(1-q)*(k-1)*120 + o2*(k-1)*300,y:60+(1-q)*500+fl-o2*60,rx:(1-q)*-55,rz:(1-q)*(k-1)*10,s:1+o2*.25,z:o2*300,o:cl(q*1.5)*(1-o2),bl:(1-q)*16+o2*28});
+     $(id).style.boxShadow=`0 0 ${40+30*Math.sin(t*2+k)**2}px rgba(76,195,255,.3),inset 0 1px 0 rgba(255,255,255,.35)`;
+   });
+  }
+
+  // ---------- S6 slogan 19.4 - 23.1 ----------
+  {const lines=[$('sl1'),$('sl2')];
+   const out=ei(p(t,22.5,23.1));
+   lines.forEach((L,li)=>{set(L,{y:(li?75:-85)+out*(li?40:-40),s:1+out*.15+0.015*(t-19.4),o:t>19.3&&t<23.2?1-out:0,bl:out*24});
+     [...L.children].forEach((w,k)=>{const a=19.5+li*0.75+k*0.2; const q=eo(p(t,a,a+0.7));
+       w.style.transform=`translateY(${(1-q)*70}px) rotateX(${(1-q)*-70}deg)`; w.style.opacity=q; w.style.filter=(q<.98?`blur(${(1-q)*16}px)`:'')+(w.classList.contains('g')?' drop-shadow(0 0 24px rgba(76,195,255,.6))':'')||'none';});
+   });
+  }
+
+  // ---------- S7 end 23 - 28 ----------
+  {const f=p(t,23.0,23.15)*(1-p(t,23.15,23.9)); $('flash').style.opacity=f;
+   const q=eo(p(t,23.05,24.4)); const breathe=1+0.012*Math.sin((t-23)*1.6);
+   set($('logo'),{y:-120+(1-q)*40,s:lerp(1.35,1,q)*breathe,o:q*(1-p(t,27.6,28)),bl:(1-q)*30});
+   $('logo').style.filter=($('logo').style.filter=='none'?'':$('logo').style.filter)+` drop-shadow(0 0 ${10+6*Math.sin(t*2)}px rgba(76,195,255,.3))`;
+   const q2=back(p(t,24.3,25.0)); set($('tel'),{y:330,s:cl(q2,0,2)*0.9+0.1*(q2>0),o:cl(p(t,24.3,24.6))*(1-p(t,27.6,28)),bl:(1-cl(p(t,24.3,24.8)))*12});
+   const q3=eo(p(t,25.0,25.8)); set($('tag'),{y:450+(1-q3)*20,o:q3*.8*(1-p(t,27.6,28)),bl:(1-q3)*8});
+   $('tel').style.boxShadow=`0 0 ${40+30*Math.sin(t*3)**2}px rgba(76,195,255,.5),inset 0 1px 0 rgba(255,255,255,.35)`;
+  }
+};
+render(0);
+</script>
+</body>
+</html>
