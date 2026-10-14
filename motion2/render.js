@@ -5,8 +5,9 @@ const path = require('path'); const fs = require('fs');
 (async () => {
   const [mode, out, ...rest] = process.argv.slice(2);
   const browser = await chromium.launch({ args: ['--allow-file-access-from-files', '--disable-web-security'] });
-  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
-  await page.goto('file://' + path.resolve(__dirname, 'scene.html'));
+  const VW = +(process.env.VW || 1920), VH = +(process.env.VH || 1080);
+  const page = await browser.newPage({ viewport: { width: VW, height: VH } });
+  await page.goto('file://' + path.resolve(__dirname, 'scene.html') + (process.env.HASH || ''));
   await page.evaluate(() => window.READY);
   await page.waitForTimeout(300);
   const shot = async t => { await page.evaluate(t => render(t), t); return page.screenshot({ type: 'jpeg', quality: 93 }); };
