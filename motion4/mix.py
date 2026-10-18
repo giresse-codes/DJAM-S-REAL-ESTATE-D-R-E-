@@ -74,14 +74,14 @@ section(1.0, 6.2, UP, kick_on=True, arp=True)
 section(6.2, 13.15, UP, drums=True)
 section(13.15, 20.6, DOWN, drums=True, g_arp=.06)
 section(20.6, 29.7, UP, drums=True)
-section(29.7, 40.4, UP, drums=True, g_arp=.08)
-kick(40.55, .45); kick(40.8, .3)                      # tactical pause heartbeat
-section(41.1, 47.1, UP, drums=True, hat16=True, g_arp=.08)
-section(47.1, 52.1, DOWN, drums=True, g_arp=.06)
-section(52.1, 55.2, TENSE, drums=True, hat16=True, g_arp=.0, arp=False)
-section(55.2, 60.3, UP, drums=True, g_arp=.07)
-pad([48, 55, 60, 64, 67], 60.3, 8.4, .06); place1(tone(note(24), 8.6, att=.05, harm=(1, .4)), 60.3, .3)
-for j in range(16): pluck([72, 76, 79, 84][j % 4], 60.6 + j * .5, .04 * (1 - j / 16))
+section(29.7, 38.25, UP, drums=True, g_arp=.08)
+kick(38.4, .45); kick(38.65, .3)                      # tactical pause heartbeat
+section(41.1-2.15, 47.1-2.15, UP, drums=True, hat16=True, g_arp=.08)
+section(47.1-2.15, 52.1-2.15, DOWN, drums=True, g_arp=.06)
+section(52.1-2.15, 55.2-2.15, TENSE, drums=True, hat16=True, g_arp=.0, arp=False)
+section(55.2-2.15, 60.3-2.15, UP, drums=True, g_arp=.07)
+pad([48, 55, 60, 64, 67], 58.15, 8.2, .06); place1(tone(note(24), 8.4, att=.05, harm=(1, .4)), 58.15, .3)
+for j in range(16): pluck([72, 76, 79, 84][j % 4], 58.45 + j * .5, .04 * (1 - j / 16))
 mus /= np.abs(mus).max()
 # reverb-ish smear (cheap FFT convolution)
 def fftconv(a, b):
@@ -108,7 +108,7 @@ SFX = [
  (20.5,'whoosh',.45),(20.9,'pop',.35),(21.8,'whoosh-short',.35),(23.3,'pop',.45),(24.7,'pop',.45),
  (25.9,'whoosh',.45),(26.3,'pop',.45),(26.4,'ping',.3),(27.4,'whoosh-short',.35),(28.1,'typing',.2),(29.2,'sparkle',.3),
  (29.6,'whoosh-cinematic',.4),(30.37,'typing',.25),(31.1,'chime',.35),(31.95,'pop',.4),(32.5,'pop',.3),
- (33.5,'whoosh',.45),(34.7,'whoosh-short',.35),(34.85,'typing',.2),(35.4,'pop',.35),(37.2,'whoosh-short',.4),(37.3,'pop',.35),(39.0,'whoosh-short',.4),(39.1,'pop',.35),
+ (33.5,'whoosh',.45),(34.7,'whoosh-short',.35),(34.85,'typing',.2),(35.4,'pop',.35),(36.55,'whoosh-short',.4),(36.65,'pop',.35),
  (40.35,'whoosh-short',.3),(41.05,'whoosh',.45),(42.1,'impact-bass-1',.85),(42.21,'typing',.25),(42.8,'chime',.45),(42.4,'pop',.3),(42.6,'pop',.3),
  (44.6,'impact-bass-2',.8),(44.62,'click',.5),(45.55,'pop',.4),(46.95,'whoosh',.45),
  (47.28,'whoosh-short',.35),(47.35,'pop',.4),(48.18,'whoosh-short',.35),(48.25,'pop',.4),(49.04,'whoosh-short',.35),(49.1,'pop',.4),(50.4,'ping',.35),(50.75,'pop',.35),
@@ -116,11 +116,12 @@ SFX = [
  (55.1,'whoosh',.45),(55.35,'pop',.35),(56.1,'notification',.4),(56.9,'pop',.35),(58.0,'whoosh-short',.35),(58.6,'pop',.4),
  (60.2,'whoosh-cinematic',.45),(60.55,'impact-bass-1',.9),(60.6,'chime',.4),(60.8,'pop',.3),(61.4,'sparkle',.35),(64.6,'pop',.4),(65.2,'notification',.25),
 ]
+SFX = [(a if a < 38.6 else a - 2.15, n, g) for a, n, g in SFX]
 fx = np.zeros((N, 2)); cache = {}
 for at, name, g in SFX:
     if name not in cache: cache[name] = load(f'assets/sfx/{name}.mp3')
     place(fx, cache[name], at, g)
-riser = load('assets/sfx/riser.mp3'); place(fx, riser[-int(4.2 * SR):], 56.1, .28)
+riser = load('assets/sfx/riser.mp3'); place(fx, riser[-int(4.2 * SR):], 53.95, .28)
 fx *= 0.6 / max(1e-9, np.percentile(np.abs(fx), 99.9))
 # keep effects under the voice too (lighter duck)
 fx *= (1 - 0.35 * env)[:, None]

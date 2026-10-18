@@ -10,7 +10,7 @@ groups=[];cur=[]
 for i,w in enumerate(W):
     cur.append(i)
     nxt=W[i+1] if i+1<len(W) else None
-    if nxt and nxt[0] in ('m²,','m².','FCFA','2,','chinoise.','Douala','attention.'): pass
+    if nxt and nxt[0] in ('m²,','m²','m².','FCFA','2,','chinoise.','Douala','attention.'): pass
     elif w[0][-1] in '.,!:…?' or len(cur)>=3 or (nxt and nxt[1]-w[2]>0.3) or not nxt: groups.append(cur);cur=[]
 open('words.js','w').write('window.WORDS='+json.dumps(W,ensure_ascii=False)+';\nwindow.GROUPS='+json.dumps(groups)+';\nwindow.DURATION='+str(T['duration'])+';\n')
 def ts(x): return f"{int(x//3600):02d}:{int(x%3600//60):02d}:{int(x%60):02d},{int(round((x%1)*1000))%1000:03d}"
