@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>DRE Missole 2 Mbongo</title>
+<style>
+@font-face{font-family:M;src:url(assets/montserrat-latin-400-normal.woff2);font-weight:400}
+@font-face{font-family:M;src:url(assets/montserrat-latin-600-normal.woff2);font-weight:600}
+@font-face{font-family:M;src:url(assets/montserrat-latin-800-normal.woff2);font-weight:800}
+@font-face{font-family:P;src:url(assets/playfair-display-latin-700-italic.woff2);font-weight:700;font-style:italic}
+:root{--navy:#0b2a66;--blue:#1f7fe0;--cyan:#38b6ff;--gold:#ffc83d}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0b1630;font-family:M,sans-serif;color:#fff}
+#world{position:absolute;inset:0;overflow:hidden;perspective:1600px}
+.abs{position:absolute;left:50%;top:50%;will-change:transform,opacity,filter}
+.full{position:absolute;inset:0}
+.layer{position:absolute;inset:0;opacity:0}
+.big{font-weight:800;white-space:nowrap;letter-spacing:-2px;line-height:1}
+.lab{font-size:34px;letter-spacing:10px;font-weight:600;white-space:nowrap}
+.ser{font-family:P;font-style:italic;font-weight:700}
+/* glossy 3D pills (reference look) */
+.gl{border-radius:46px;box-shadow:inset 0 8px 16px rgba(255,255,255,.55),inset 0 -14px 24px rgba(0,0,0,.25),0 34px 60px rgba(0,0,0,.35);border:2px solid rgba(255,255,255,.35)}
+.g-blue{background:linear-gradient(165deg,#6cbcff,#1f7fe0 50%,#0b4fb3)}
+.g-white{background:linear-gradient(165deg,#ffffff,#e8eef7 60%,#c9d4e4);color:#0b2a66}
+.g-navy{background:linear-gradient(165deg,#3a5a9a,#0b2a66 55%,#061a42)}
+.g-cyan{background:linear-gradient(165deg,#a6e3ff,#38b6ff 50%,#1789d1)}
+.g-gold{background:linear-gradient(165deg,#ffe28a,#ffc83d 50%,#e09b00);color:#3a2600}
+.pill{display:flex;align-items:center;gap:24px;padding:18px 40px 18px 22px;font-size:46px;font-weight:800;white-space:nowrap}
+.pill .ic{width:76px;height:76px;border-radius:22px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 3px 6px rgba(255,255,255,.4)}
+.pill .ic img{width:54px;height:54px}
+.g-white .ic{background:rgba(31,127,224,.12)}
+.vid{border-radius:44px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.45);border:6px solid #fff}
+.vid canvas{position:absolute;left:0;top:0}
+.card{width:440px;border-radius:40px;padding:30px;display:flex;flex-direction:column;gap:14px}
+.card img{width:96px;height:96px}
+.card b{font-size:38px;line-height:1.08}
+.cc{width:540px;height:660px;border-radius:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;text-align:center;padding:40px}
+.cc .t{font-size:52px;font-weight:800;line-height:1.05}
+.cc .btn{margin-top:10px;padding:14px 36px;border-radius:999px;font-size:28px;font-weight:800}
+.stamp{padding:14px 40px;border:10px solid #fff;border-radius:24px;font-size:92px;font-weight:800;letter-spacing:3px;white-space:nowrap}
+#subs{position:absolute;left:40px;right:40px;top:1335px;text-align:center;font-weight:800;font-size:84px;line-height:1.08;text-transform:uppercase;letter-spacing:-1px}
+#subs span{display:inline-block;margin:0 .14em;color:#fff;-webkit-text-stroke:12px #0b1f44;paint-order:stroke fill;filter:drop-shadow(0 8px 0 rgba(11,31,68,.35))}
+.react{width:150px;height:150px}.react img{width:100%;height:100%;filter:drop-shadow(0 14px 18px rgba(0,0,0,.35))}
+.ring{position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;border:6px solid #fff}
+.burst{position:absolute;left:0;top:0;width:0;height:0}
+.burst i{position:absolute;left:-4px;width:8px;border-radius:4px;background:#fff;box-shadow:0 0 10px #38b6ff;transform-origin:4px 0}
+.p{position:absolute;left:0;top:0;border-radius:50%}
+#grain{position:absolute;inset:0;mix-blend-mode:overlay;opacity:.1;pointer-events:none}
+#leak{position:absolute;inset:-20%;mix-blend-mode:screen;opacity:0;pointer-events:none;background:radial-gradient(ellipse 40% 60% at 30% 40%,rgba(255,170,80,.85),rgba(255,150,60,0) 70%),radial-gradient(ellipse 35% 50% at 70% 60%,rgba(110,200,255,.85),rgba(110,200,255,0) 70%)}
+#flare{position:absolute;left:0;right:0;height:10px;top:50%;margin-top:-5px;background:linear-gradient(90deg,rgba(56,182,255,0),#fff 50%,rgba(56,182,255,0));box-shadow:0 0 50px 16px rgba(56,182,255,.55);opacity:0;mix-blend-mode:screen}
+#flash{position:absolute;inset:0;background:#fff;opacity:0}
+#vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(0,0,0,.45) 100%);pointer-events:none}
+</style>
+</head>
+<body>
+<div id="world">
+  <div id="L_light" class="layer" style="background:radial-gradient(circle at 50% 40%,#ffffff,#e9eef5 55%,#c7d2e2)"></div>
+  <div id="L_rays" class="layer"></div>
+  <div id="L_rings" class="layer"></div>
+  <div id="L_spot" class="layer"></div>
+  <div id="L_foot" class="layer"></div>
+  <div id="sc" class="full"></div>
+  <div id="pt" class="full"></div>
+</div>
+<div id="vig"></div>
+<div id="flash"></div><div id="leak"></div><div id="flare"></div><div id="bursts" class="full"></div>
+<div id="rx" class="full"></div>
+<div id="subs"></div>
+<div id="grain"></div>
+<svg width="0" height="0" style="position:absolute"><filter id="ca" x="0" y="0" width="100%" height="100%"><feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="r"/><feOffset in="r" id="caR" dx="0" result="ro"/><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" result="g"/><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0" result="b"/><feOffset in="b" id="caB" dx="0" result="bo"/><feBlend in="ro" in2="g" mode="screen" result="rg"/><feBlend in="rg" in2="bo" mode="screen"/></filter></svg>
+<script src="words.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), p=(t,a,b)=>cl((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,4), ei=x=>x*x*x, eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back=x=>{const c=2.2;return x<=0?0:1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,x)=>a+(b-a)*x, CX=540, CY=960;
+function rnd(s){return function(){s=(s*16807)%2147483647;return (s-1)/2147483646}}
+function set(el,{x=0,y=0,s=1,rx=0,ry=0,rz=0,o=1,bl=0}){
+  el.style.transform=`translate(-50%,-50%) translate3d(${x}px,${y}px,0) rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${s})`;
+  el.style.opacity=o; el.style.filter=bl>0.05?`blur(${bl}px)`:'none'; el.style.visibility=o<=0.002?'hidden':'visible';}
+function life(t,a,b,ai=.5,bo=.4){return {i:eo(p(t,a,a+ai)),o:ei(p(t,b-bo,b)),on:t>a-.01&&t<b+.01}}
+function std(el,t,a,b,{x=0,y=0,dy=70,s0=.85,bl0=14,dyo=-50,so=1,rz=0,ry=0}={}){const L=life(t,a,b);
+  set(el,{x,y:y+(1-L.i)*dy+L.o*dyo,s:lerp(s0,1,L.i)*lerp(1,so,L.o),rz,ry,o:L.on?L.i*(1-L.o):0,bl:(1-L.i)*bl0+L.o*bl0});return L}
+function pop(el,t,a,b,{x=0,y=0,rz=0,ry=0,rx=0,s=1}={}){const L=life(t,a,b,.45,.35);set(el,{x,y:y+L.o*-40,s:s*cl(back(p(t,a,a+.45)),0,2)*(1-L.o*.15),rz,ry,rx,o:L.on?cl(p(t,a,a+.12))*(1-L.o):0,bl:L.o*14});return L}
+// 3D flip-in like the reference pills
+function flip(el,t,a,b,{x=0,y=0,rz=0}={}){const L=life(t,a,b,.55,.35);set(el,{x:x+L.o*-300,y,rx:(1-L.i)*-90,rz:rz*L.i,s:lerp(.7,1,L.i),o:L.on?cl(L.i*2)*(1-L.o):0,bl:L.o*16});return L}
+const H=html=>{const d=document.createElement('div');d.innerHTML=html.trim();const e=d.firstChild;$('sc').appendChild(e);return e};
+const E=c=>`assets/emoji2/${c}.svg`;
+const fmt=n=>Math.round(n).toLocaleString('fr-FR').replace(/ | /g,' ');
+const pillH=(cls,em,tx,extra='')=>H(`<div class="abs gl ${cls} pill" ${extra}><span class="ic"><img src="${E(em)}"></span>${tx}</div>`);
+
+/* ---------- footage ---------- */
+const CLIPS={intro:144,bati:102,nonbati:102,cta:150}, IMG={}, loads=[];
+for(const [k,n] of Object.entries(CLIPS)){IMG[k]=[];for(let i=1;i<=n;i++){const im=new Image();im.src=`assets/clips/${k}/${String(i).padStart(3,'0')}.jpg`;IMG[k].push(im);loads.push(im.decode().catch(()=>{}))}}
+function draw(cv,k,lt,zoom=1){const a=IMG[k],n=a.length,f=Math.floor(lt*30)%(2*n-2),i=f<n?f:2*n-2-f,im=a[cl(i,0,n-1)],c=cv.getContext('2d'),w=cv.width,h=cv.height,s=Math.max(w/1280,h/720)*zoom;c.drawImage(im,(w-1280*s)/2,(h-720*s)/2,1280*s,720*s)}
+function vcard(w,h){const e=H(`<div class="abs vid" style="width:${w}px;height:${h}px"></div>`);const c=document.createElement('canvas');c.width=w;c.height=h;e.appendChild(c);return {e,c}}
+
+/* ---------- backgrounds ---------- */
+// rays (reference burst)
+$('L_rays').innerHTML=`<div class="full" style="background:#0b4fb3"></div><svg id="rays" viewBox="-1000 -1000 2000 2000" width="2600" height="2600" style="position:absolute;left:-760px;top:-340px">${Array.from({length:18},(_,i)=>{const a0=i*20*Math.PI/180,a1=(i*20+12)*Math.PI/180;const cols=['#38b6ff','#ffffff','#0b2a66','#7fd0ff','#1f7fe0','#ffc83d'];return `<path d="M0 0 L${1400*Math.cos(a0)} ${1400*Math.sin(a0)} L${1400*Math.cos(a1)} ${1400*Math.sin(a1)}Z" fill="${cols[i%6]}" opacity=".9"/>`}).join('')}</svg><div class="full" style="background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.85),rgba(255,255,255,0) 32%)"></div>`;
+// rings (concentric + watermark word)
+$('L_rings').innerHTML=`<div class="full" id="ringbg"></div><div class="abs big" id="wmk" style="font-size:330px;color:rgba(11,42,102,.28);letter-spacing:-6px"></div><div class="full" style="background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.75),rgba(255,255,255,0) 22%)"></div>`;
+// spotlight stage
+$('L_spot').innerHTML=`<div class="full" style="background:linear-gradient(180deg,#334058,#4b5a73 60%,#5d6c86)"></div><div id="cone" class="full" style="background:conic-gradient(from 165deg at 50% -4%,rgba(255,255,255,0) 0deg,rgba(255,255,255,.55) 15deg,rgba(255,255,255,0) 30deg);filter:blur(18px)"></div><div class="full" style="background:radial-gradient(ellipse 45% 8% at 50% 72%,rgba(255,255,255,.35),rgba(255,255,255,0))"></div>`;
+const cvF=document.createElement('canvas');cvF.width=1080;cvF.height=1920;$('L_foot').appendChild(cvF);
+$('L_foot').insertAdjacentHTML('beforeend','<div class="full" style="background:linear-gradient(180deg,rgba(5,20,50,.55),rgba(5,20,50,.05) 35%,rgba(5,20,50,.1) 60%,rgba(5,20,50,.7))"></div>');
+const BG={light:[[1.0,6.2],[47.1,52.1],[55.2,60.3]],rays:[[0,1.0],[6.2,13.15],[41.1,47.1]],rings:[[13.15,17.9],[26.0,29.7],[40.4,41.1],[52.1,55.2]],spot:[[20.6,26.0],[33.55,40.4],[60.3,69.1]],foot:[[17.9,20.6],[29.7,33.55]]};
+const WMK=[[13.15,17.9,'DIBAMBA'],[26.0,29.7,'IDÉAL'],[40.4,41.1,'D.R.E'],[52.1,55.2,'VALEUR']];
+
+/* ---------- S0 ---------- */
+const logoC=H('<div class="abs gl g-white" style="width:640px;height:640px;border-radius:90px;display:flex;align-items:center;justify-content:center"><img src="assets/logo-light.png" style="width:520px"></div>');
+const v0=vcard(900,520);
+const p0=[pillH('g-blue','1f4cd','MISSOLÉ 2'),pillH('g-white','1f3e1','DIBAMBA'),pillH('g-navy','1f4c8','EMPLACEMENT STRATÉGIQUE'),pillH('g-cyan','1f4b0','INVESTIR DÈS AUJOURD\'HUI')];
+const p0t=[1.12,2.04,3.04,4.34], p0y=[-80,30,140,250], p0z=[-4,3,-2,2];
+
+/* ---------- S1 ---------- */
+const s1card=H(`<div class="abs gl g-white" style="width:860px;height:470px;border-radius:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center"><div class="lab" style="color:#1f7fe0">UN TERRAIN</div><div class="big" style="font-size:96px;color:#0b2a66" id="pot">À FORT<br>POTENTIEL</div></div>`);
+const s1zone=H(`<div class="abs gl g-navy" style="width:860px;height:470px;border-radius:60px;display:flex;align-items:center;gap:30px;padding:0 50px"><img src="${E('1f3d7')}" style="width:170px"><div><div class="lab" style="color:#7fd0ff;font-size:30px">UNE ZONE EN PLEINE</div><div class="big" style="font-size:78px;margin-top:10px">TRANSFOR-<br>MATION</div></div></div>`);
+const oppo=H(`<div class="abs gl g-gold" style="padding:40px 70px;border-radius:60px;text-align:center"><div class="big" style="font-size:118px;color:#3a2600">OPPORTUNITÉ</div><div class="lab" style="color:#5a3d00;margin-top:12px;font-size:30px">À SAISIR MAINTENANT</div></div>`);
+const stars=[[-380,-200,1],[390,-160,.8],[-300,190,.7],[350,200,1]].map(([x,y,s])=>({e:H(`<img class="abs" src="${E('2b50')}" style="width:${130*s}px">`),x,y}));
+
+/* ---------- S2 map ---------- */
+const map=H(`<div class="abs gl g-white" style="width:920px;height:800px;border-radius:56px;overflow:hidden">
+<svg viewBox="0 0 920 800" width="920" height="800" style="position:absolute;left:0;top:0">
+ <rect width="920" height="800" fill="#eef4ea"/>
+ ${Array.from({length:9},(_,i)=>`<path d="M0 ${i*100+40} C 300 ${i*100}, 600 ${i*100+80}, 920 ${i*100+30}" stroke="#dfe9d6" stroke-width="2" fill="none"/>`).join('')}
+ <path id="riv" d="M-20 120 C 180 160, 260 60, 420 120 S 700 260, 940 200" stroke="#5aa9ef" stroke-width="34" fill="none" stroke-linecap="round" opacity=".85"/>
+ <path id="rd1" d="M80 760 C 260 600, 380 520, 470 420 S 640 260, 880 120" stroke="#9aa6b6" stroke-width="22" fill="none" stroke-linecap="round"/>
+ <path id="rd2" d="M30 470 C 260 450, 380 430, 470 420 S 760 420, 900 470" stroke="#9aa6b6" stroke-width="18" fill="none" stroke-linecap="round"/>
+ <circle cx="470" cy="420" r="26" fill="#fff" stroke="#9aa6b6" stroke-width="8"/>
+ <path id="lot" d="M560 520 L720 500 L760 640 L590 670Z" fill="rgba(31,127,224,.25)" stroke="#1f7fe0" stroke-width="7" stroke-dasharray="620"/>
+</svg>
+<img id="mpin" src="${E('1f4cd')}" style="position:absolute;left:600px;top:470px;width:110px">
+<div class="mtag" id="mt1" style="position:absolute;left:520px;top:690px;padding:10px 22px;border-radius:999px;background:#1f7fe0;color:#fff;font-size:34px;font-weight:800">MISSOLÉ 2</div>
+<div class="mtag" id="mt2" style="position:absolute;left:150px;top:340px;padding:10px 22px;border-radius:999px;background:#0b2a66;color:#fff;font-size:30px;font-weight:800">CARREFOUR MBONGO</div>
+<div class="mtag" id="mt3" style="position:absolute;left:520px;top:40px;padding:8px 20px;border-radius:999px;background:#fff;color:#1f7fe0;font-size:28px;font-weight:800;box-shadow:0 6px 16px rgba(0,0,0,.15)">FLEUVE / DIBAMBA</div>
+</div>`);
+const arr=H('<div class="abs gl g-navy" style="padding:20px 40px;border-radius:40px;text-align:center"><div class="lab" style="color:#7fd0ff;font-size:28px">ARRONDISSEMENT DE LA</div><div class="big" style="font-size:84px;margin-top:6px">DIBAMBA</div></div>');
+const litt=H(`<div class="abs gl g-cyan pill" style="font-size:40px"><span class="ic"><img src="${E('1f4cd')}"></span>LITTORAL · CAMEROUN</div>`);
+
+/* ---------- S3 hectare ---------- */
+const hecSvg=H('<svg class="abs" viewBox="0 0 1080 1920" width="1080" height="1920"><path id="hpoly" d="M180 780 L820 700 L900 1160 L240 1240Z" fill="rgba(56,182,255,.18)" stroke="#fff" stroke-width="8" stroke-dasharray="2400" stroke-linejoin="round"/></svg>');
+const hpoly=hecSvg.querySelector('#hpoly');
+const hec=H('<div class="abs" style="text-align:center;text-shadow:0 8px 40px rgba(0,0,0,.6)"><div class="lab" style="font-size:38px">PLUS D\'</div><div class="big" style="font-size:200px"><span id="hn">1</span><span style="font-size:110px"> HECTARE</span></div><div class="big ser" style="font-size:90px;letter-spacing:0;color:#ffe28a" id="demi">et demi</div></div>');
+const vente=H(`<div class="abs gl g-gold pill" style="font-size:50px"><span class="ic"><img src="${E('1f4b0')}"></span>DISPONIBLE À LA VENTE</div>`);
+
+/* ---------- S4 axe ---------- */
+const axe=H(`<svg class="abs" viewBox="0 0 1080 1100" width="1080" height="1100"><path id="ax" d="M540 1040 L540 520 C540 420 540 400 300 330 M540 520 C540 420 540 400 780 330" stroke="#1c2433" stroke-width="56" fill="none" stroke-linecap="round"/><path id="axd" d="M540 1040 L540 520 C540 420 540 400 300 330 M540 520 C540 420 540 400 780 330" stroke="#ffd34d" stroke-width="7" fill="none" stroke-dasharray="26 22"/></svg>`);
+const axL=axe.querySelector('#ax'), axD=axe.querySelector('#axd'); const AXL=axL.getTotalLength?2000:2000;
+const dots=[0,1,2,3].map(()=>{const e=document.createElement('div');e.className='p';e.style.cssText='width:26px;height:26px;background:#fff;box-shadow:0 0 20px #38b6ff,0 0 6px #fff';$('sc').appendChild(e);return e});
+const site=H(`<div class="abs gl g-blue pill" style="font-size:40px"><span class="ic"><img src="${E('1f4cd')}"></span>VOTRE TERRAIN</div>`);
+const axLab=H('<div class="abs lab" style="font-size:40px;color:#ffd34d">SUR L\'AXE QUI MÈNE VERS</div>');
+const port=H(`<div class="abs gl g-white card"><img src="${E('1f6a2')}"><b>Extension du Port Autonome de Douala</b></div>`);
+const ciment=H(`<div class="abs gl g-white card"><img src="${E('1f3ed')}"><b>Cimenterie chinoise</b></div>`);
+
+/* ---------- S5 idéal ---------- */
+const idealP=pillH('g-blue','2705',"L'ENDROIT IDÉAL",'style="font-size:58px"');
+const chart=H(`<div class="abs gl g-white" style="width:880px;height:560px;border-radius:56px;padding:44px 50px"><div class="lab" style="color:#1f7fe0;font-size:30px">ANTICIPEZ LE</div><div class="big" style="font-size:66px;color:#0b2a66;margin-top:8px">DÉVELOPPEMENT</div><div style="position:absolute;left:60px;right:60px;bottom:50px;height:270px;display:flex;align-items:flex-end;gap:26px">${[30,45,58,76,100].map((h,i)=>`<div class="bar" data-h="${h}" style="flex:1;height:0;border-radius:18px 18px 6px 6px;background:linear-gradient(180deg,${i==4?'#ffc83d,#e09b00':'#6cbcff,#1f7fe0'})"></div>`).join('')}</div><svg viewBox="0 0 780 270" width="780" height="270" style="position:absolute;left:50px;bottom:60px"><path id="carr" d="M20 230 L200 190 L360 160 L520 100 L740 20" fill="none" stroke="#0b2a66" stroke-width="10" stroke-linecap="round" stroke-dasharray="900"/></svg></div>`);
+const bars=[...chart.querySelectorAll('.bar')], carr=chart.querySelector('#carr');
+
+/* ---------- S6 15 000 m² ---------- */
+const m2=H('<div class="abs" style="text-align:center;text-shadow:0 8px 40px rgba(0,0,0,.6)"><div class="lab" style="font-size:38px">PLUS DE</div><div class="big" style="font-size:190px"><span id="m2n">0</span></div><div class="big" style="font-size:110px;color:#7fd0ff">m²</div></div>');
+const relief=H(`<div class="abs gl g-white pill" style="font-size:48px"><span class="ic"><img src="${E('26f0')}"></span>EXCELLENT RELIEF</div>`);
+const topo=H('<svg class="abs" viewBox="0 0 1080 1920" width="1080" height="1920" style="opacity:.0">'+Array.from({length:7},(_,i)=>`<ellipse cx="540" cy="1050" rx="${120+i*70}" ry="${60+i*34}" fill="none" stroke="#fff" stroke-width="3" opacity="${.7-i*.08}"/>`).join('')+'</svg>');
+
+/* ---------- S7 carousel ---------- */
+const CAR=[
+ ['g-blue',`<svg viewBox="0 0 120 120" width="150" height="150"><rect x="14" y="14" width="92" height="92" rx="10" fill="rgba(255,255,255,.2)" stroke="#fff" stroke-width="7" stroke-dasharray="12 8"/><text x="60" y="72" text-anchor="middle" font-family="M" font-weight="800" font-size="30" fill="#fff">m²</text></svg>`,'<span style="font-size:34px;letter-spacing:4px;opacity:.85">LOTS À PARTIR DE</span><br><span style="font-size:110px" id="lotn">0</span><span style="font-size:60px"> m²</span>','g-white'],
+ ['g-white',`<img src="${E('1f4dc')}" style="width:150px">`,'TITRE FONCIER<br><span style="color:#1f7fe0">INDIVIDUEL</span>','g-blue'],
+ ['g-navy',`<img src="${E('1f91d')}" style="width:150px">`,'TRANSACTION<br><span style="color:#7fd0ff">SÉCURISÉE</span>','g-cyan']
+].map(([cls,ic,tx,bcls])=>H(`<div class="abs gl ${cls} cc">${ic}<div class="t">${tx}</div><div class="gl ${bcls} btn">CHEZ D.R.E</div></div>`));
+const carT=[34.7,37.2,39.0];
+
+/* ---------- S8 prix ---------- */
+const prixU=H('<div class="abs lab" style="font-size:44px;color:#fff;text-shadow:0 4px 16px rgba(0,0,0,.4)">PRIX UNIQUE</div>');
+const prixC=H('<div class="abs gl g-white" style="width:880px;height:520px;border-radius:64px;display:flex;flex-direction:column;align-items:center;justify-content:center"><div class="big" style="font-size:200px;color:#0b2a66" id="pn">0</div><div class="big" style="font-size:70px;color:#1f7fe0;letter-spacing:0"><span id="pf">FCFA</span> <span id="pm">/ m²</span></div></div>');
+const pstars=[[-400,-300],[400,-260],[-360,250],[380,230]].map(([x,y],k)=>({e:H(`<img class="abs" src="${E('2b50')}" style="width:${110+k*10}px">`),x,y}));
+const ferme=H('<div class="abs stamp" style="background:#e23b4a;border-color:#fff;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,.35)">PRIX FERME</div>');
+const nonneg=H(`<div class="abs gl g-navy pill" style="font-size:52px"><span class="ic"><img src="${E('1f512')}"></span>NON NÉGOCIABLE</div>`);
+
+/* ---------- S9 profils ---------- */
+const prof=[pillH('g-blue','1f46a','PARTICULIER','style="font-size:56px"'),pillH('g-white','1f4bc','INVESTISSEUR','style="font-size:56px"'),pillH('g-navy','1f3d7','PROMOTEUR IMMOBILIER','style="font-size:50px"')];
+const profT=[47.28,48.18,49.04], profY=[-560,-400,-240], profZ=[-5,4,-3];
+const moment=H(`<div class="abs" style="text-align:center"><img src="${E('23f0')}" style="width:150px"><div class="big" style="font-size:112px;color:#0b2a66;margin-top:10px">C'EST LE<br><span style="color:#1f7fe0">MOMENT</span></div><div class="ser" style="font-size:64px;color:#0b2a66;margin-top:12px" id="posi">de vous positionner</div></div>`);
+
+/* ---------- S10 valeur ---------- */
+const natt=H('<div class="abs big" style="font-size:120px;color:#0b2a66;text-align:center">N\'ATTENDEZ<br>PAS !</div>');
+const val=H(`<div class="abs gl g-white" style="width:860px;height:430px;border-radius:56px;overflow:hidden"><svg viewBox="0 0 860 430" width="860" height="430"><defs><linearGradient id="vg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38b6ff" stop-opacity=".45"/><stop offset="1" stop-color="#38b6ff" stop-opacity="0"/></linearGradient></defs><path id="va" d="M40 380 L180 340 L300 350 L430 260 L560 230 L680 140 L820 50 L820 430 L40 430Z" fill="url(#vg)"/><path id="vl" d="M40 380 L180 340 L300 350 L430 260 L560 230 L680 140 L820 50" fill="none" stroke="#1f7fe0" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000"/><circle id="vc" cx="820" cy="50" r="18" fill="#ffc83d" stroke="#fff" stroke-width="6"/></svg><div style="position:absolute;left:44px;top:34px;font-size:30px;font-weight:800;color:#1f7fe0;letter-spacing:4px">VALEUR DE LA ZONE</div></div>`);
+const vl=val.querySelector('#vl'), va=val.querySelector('#va'), vc=val.querySelector('#vc');
+const valeur=H(`<div class="abs gl g-gold pill" style="font-size:46px"><span class="ic"><img src="${E('1f4c8')}"></span>ELLE PREND DE LA VALEUR</div>`);
+
+/* ---------- S11 contact ---------- */
+const ctT=H('<div class="abs big" style="font-size:104px;color:#0b2a66;text-align:center">CONTACTEZ<span style="color:#1f7fe0">-NOUS</span></div>');
+const phoneC=H(`<div class="abs gl g-blue" style="padding:26px 46px 26px 26px;border-radius:999px;display:flex;align-items:center;gap:28px"><span style="width:110px;height:110px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center"><img src="${E('1f4de')}" style="width:74px"></span><div><div style="font-size:24px;letter-spacing:6px;font-weight:600;opacity:.85">APPEL · WHATSAPP</div><div class="big" style="font-size:66px;letter-spacing:0;margin-top:6px">(+237) 690 54 61 11</div></div></div>`);
+const mailC=H('<div class="abs gl g-white pill" style="font-size:42px"><span class="ic" style="font-size:44px">✉️</span>dreigsarl@gmail.com</div>');
+const v11=vcard(900,400);
+const visite=pillH('g-gold','1f4c5','ORGANISEZ UNE VISITE','style="font-size:46px"');
+
+/* ---------- S12 end ---------- */
+const ped=H('<div class="abs" style="width:420px;height:360px"><div style="position:absolute;left:0;right:0;top:40px;bottom:0;background:linear-gradient(90deg,#c9d2df,#ffffff 45%,#b9c3d2);border-radius:0 0 30px 30px"></div><div style="position:absolute;left:0;right:0;top:0;height:80px;border-radius:50%;background:radial-gradient(ellipse,#ffffff,#dfe6f0)"></div></div>');
+const logoE=H('<div class="abs gl g-white" style="width:560px;height:560px;border-radius:80px;display:flex;align-items:center;justify-content:center;overflow:hidden"><img src="assets/logo-light.png" style="width:460px"><div id="shine" style="position:absolute;top:-20%;width:140px;height:140%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);transform:rotate(18deg)"></div></div>');
+const sl1=H('<div class="abs big" style="font-size:86px;text-shadow:0 6px 24px rgba(0,0,0,.35)"><span class="w">Bâtir</span> <span class="w">aujourd\'hui,</span></div>');
+const sl2=H('<div class="abs ser" style="font-size:78px;white-space:nowrap;text-shadow:0 6px 24px rgba(0,0,0,.35)"><span class="w">impacter</span> <span class="w">pour</span> <span class="w" style="color:#ffe28a">l\'éternité.</span></div>');
+const tel=H('<div class="abs gl g-blue pill" style="font-size:48px"><span class="ic"><img src="'+E('1f4de')+'"></span>(+237) 690 54 61 11</div>');
+const mail2=H('<div class="abs" style="font-size:36px;font-weight:600;white-space:nowrap;text-shadow:0 4px 14px rgba(0,0,0,.4)">dreigsarl@gmail.com · Missolé 2, Dibamba</div>');
+
+/* ---------- reactions, bursts, particles ---------- */
+const REACTS=[['1f914',6.5,340,-700],['1f440',12.1,-340,-700],['1f929',19.9,340,-700],['1f4af',32.5,340,-700],['1f525',54.2,340,-700],['1f3c6',60.8,-340,-700]].map(([em,t0,x,y])=>{const e=document.createElement('div');e.className='abs react';e.innerHTML=`<div class="ring"></div><img src="${E(em)}">`;$('rx').appendChild(e);return {e,t0,x,y,ring:e.querySelector('.ring')}});
+const BURSTS=[[1.0,0,-60],[1.16,0,-80],[2.08,0,30],[3.08,0,140],[4.38,0,250],[7.7,0,-220],[10.63,0,-200],[13.45,150,-230],[16.11,0,120],[19.88,0,180],[23.38,-240,-560],[24.76,240,-560],[26.9,0,-600],[30.37,0,-430],[34.85,0,-150],[37.29,0,-150],[39.09,0,-150],[42.21,0,-200],[44.63,0,120],[47.33,0,-560],[48.23,0,-400],[49.09,0,-240],[50.73,0,0],[56.17,0,-400],[60.6,0,-170]].concat(REACTS.map(r=>[r.t0+.05,r.x,r.y])).map(([t0,x,y],k)=>{const e=document.createElement('div');e.className='burst';e.innerHTML=Array.from({length:10},()=>'<i></i>').join('');$('bursts').appendChild(e);return {e,t0,x,y,k}});
+const conf=[];{const r=rnd(9),cols=['#38b6ff','#ffffff','#ffc83d','#1f7fe0','#7fd0ff'];for(let i=0;i<120;i++){const e=document.createElement('div');e.className='p';const w=10+r()*14;e.style.width=w+'px';e.style.height=(w*.45)+'px';e.style.borderRadius='2px';e.style.background=cols[i%5];$('pt').appendChild(e);conf.push({e,a:-Math.PI/2+(r()-.5)*2.8,v:900+r()*900,rot:r()*720,t0:[10.63,42.21,60.6][i%3]+r()*.1})}}
+
+/* ---------- after effects ---------- */
+const GR=[];{const r=rnd(21);for(let k=0;k<4;k++){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d'),d=x.createImageData(256,256);for(let i=0;i<d.data.length;i+=4){const v=r()*255|0;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255}x.putImageData(d,0,0);GR.push(c.toDataURL())}}
+const CUTS=[1.0,6.2,13.15,17.9,20.6,26.0,29.7,33.55,41.1,47.1,52.1,55.2,60.3], FLARES=[1.0,10.63,18.92,30.37,37.29,42.21,44.63,60.6,63.69];
+function fx(t){const f=Math.floor(t*30);$('grain').style.backgroundImage=`url(${GR[f%4]})`;$('grain').style.backgroundPosition=`${(f*137)%256}px ${(f*71)%256}px`;
+  let lk=0,lx=0;CUTS.forEach(a=>{const d=p(t,a-.35,a+.75);if(d>0&&d<1){lk=Math.max(lk,Math.sin(d*Math.PI));lx=lerp(-25,25,d)}});$('leak').style.opacity=lk*.5;$('leak').style.transform=`translateX(${lx}%)`;
+  let fl=0;FLARES.forEach(a=>{const d=t-a;if(d>0&&d<.8)fl=Math.max(fl,1-d/.8)});$('flare').style.opacity=fl*.9;$('flare').style.transform=`scaleX(${.2+1.4*(1-fl)}) scaleY(${.5+fl})`;
+  let ca=0;CUTS.forEach(a=>{const d=Math.abs(t-a);if(d<.25)ca=Math.max(ca,9*(1-d/.25))});
+  if(ca>.6){$('world').style.filter='url(#ca)';$('caR').setAttribute('dx',ca);$('caB').setAttribute('dx',-ca)}else $('world').style.filter='none';
+  $('flash').style.opacity=.8*Math.max(p(t,.95,1.0)*(1-p(t,1.0,1.5)),p(t,10.58,10.63)*(1-p(t,10.63,11.0)),p(t,42.16,42.21)*(1-p(t,42.21,42.6)),p(t,60.55,60.6)*(1-p(t,60.6,61.2)));
+  BURSTS.forEach(b=>{const lt=t-b.t0;if(lt<0||lt>.55){b.e.style.visibility='hidden';return}b.e.style.visibility='visible';b.e.style.transform=`translate(${CX+b.x}px,${CY+b.y}px) rotate(${b.k*17}deg)`;const q=eo(lt/.55);
+    [...b.e.children].forEach((i,j)=>{i.style.height=(30*(1-q)+6)+'px';i.style.transform=`rotate(${j*36}deg) translateY(${70+110*q}px)`;i.style.opacity=1-q})});
+  REACTS.forEach(r=>{const lt=t-r.t0;if(lt<0||lt>1.5){r.e.style.visibility='hidden';return}const i=back(p(lt,0,.4)),o=ei(p(lt,1.1,1.5));
+    set(r.e,{x:r.x,y:r.y-lt*30-o*60,s:i*(1+.06*Math.sin(lt*14)*Math.exp(-lt*2)),rz:Math.sin(lt*9)*12*Math.exp(-lt*2.2),o:cl(lt*8)*(1-o)});r.ring.style.transform=`scale(${.6+p(lt,0,.6)*1.1})`;r.ring.style.opacity=(1-p(lt,0,.6))*.9});
+  conf.forEach(c=>{const lt=t-c.t0;if(lt<0||lt>2.4){c.e.style.visibility='hidden';return}c.e.style.visibility='visible';const x=CX+Math.cos(c.a)*c.v*lt*(1-lt*.3), y=CY-200+Math.sin(c.a)*c.v*lt*(1-lt*.3)+900*lt*lt;
+    c.e.style.transform=`translate(${x}px,${y}px) rotate(${c.rot*lt}deg) rotateX(${lt*600}deg)`;c.e.style.opacity=1-p(lt,1.6,2.4)});
+}
+
+/* ---------- subtitles ---------- */
+const W=window.WORDS, G=window.GROUPS, subs=$('subs'); let curG=-1;
+const SUB_HIDE=[[61.9,69.1]];
+window.READY=Promise.all(loads).then(()=>document.fonts.ready);
+
+window.render=function(t){
+  /* backgrounds with crossfades */
+  for(const [k,wins] of Object.entries(BG)){let o=0;wins.forEach(([a,b])=>{o=Math.max(o,(a<=0?1:p(t,a-.2,a+.2))*(1-p(t,b-.2,b+.2)))});$('L_'+k).style.opacity=o;$('L_'+k).style.visibility=o>0?'visible':'hidden'}
+  $('rays').style.transform=`rotate(${t*14}deg) scale(${1+.04*Math.sin(t*2)})`;
+  $('ringbg').style.background=`repeating-radial-gradient(circle at 50% 42%,#1f7fe0 0 ${80+6*Math.sin(t*2)}px,#4ea8ff ${80+6*Math.sin(t*2)}px ${160+12*Math.sin(t*2)}px)`;
+  const w=WMK.find(([a,b])=>t>a-.3&&t<b+.3); if(w){$('wmk').textContent=w[2]; set($('wmk'),{y:-80,s:1.05+.05*Math.sin(t*.8),ry:-18+6*Math.sin(t*.6),rz:-4,o:1})}
+  $('cone').style.transform=`rotate(${Math.sin(t*.7)*4}deg)`;
+  const fw=t<25?'intro':'nonbati'; if($('L_foot').style.visibility=='visible') draw(cvF,t<25?'intro':'nonbati',t<25?t-17.9+1:t-29.7+.3,1.0+.1*p(t,t<25?17.9:29.7,t<25?20.6:33.55));
+  let sh=0;[[1.0,.45,12],[19.88,.4,10],[42.21,.5,14],[44.63,.45,16],[45.57,.35,8],[60.6,.4,10]].forEach(([a,d,amp])=>{if(t>a&&t<a+d)sh+=amp*(1-(t-a)/d)});
+  $('world').style.transform=`scale(${1+.015*Math.sin(t*.45)})`+(sh?` translate(${Math.sin(t*93)*sh}px,${Math.cos(t*71)*sh}px)`:'');
+
+  /* S0 */
+  { const L=life(t,0,1.15,.5,.25); set(logoC,{y:-60,s:cl(back(p(t,0.02,.5)),0,2)*(1-L.o*.4),rz:(1-eo(p(t,0,.5)))*-12,o:L.on?cl(p(t,0,.1))*(1-L.o):0,bl:L.o*12});
+    const V=life(t,1.0,6.15,.6,.4); set(v0.e,{y:-520+(1-V.i)*-200,ry:-10+4*Math.sin(t*.8),rx:6,rz:-2,s:lerp(.8,1,V.i),o:V.on?V.i*(1-V.o):0,bl:V.o*16}); if(V.on) draw(v0.c,'intro',t-1+2,1.1);
+    p0.forEach((e,k)=>flip(e,t,p0t[k],6.15,{y:p0y[k],rz:p0z[k]})); }
+
+  /* S1 */
+  { const A=life(t,6.35,8.7,.5,.35); set(s1card,{y:-260,rx:(1-A.i)*-80,o:A.on?cl(A.i*2)*(1-A.o):0,s:1-A.o*.1,bl:A.o*14,rz:-2});
+    $('pot').style.transform=`scale(${1+.08*Math.sin(Math.PI*p(t,7.6,8.0))})`;
+    const Z=life(t,8.7,10.5,.5,.35); set(s1zone,{y:-260,rx:(1-Z.i)*80,o:Z.on?cl(Z.i*2)*(1-Z.o):0,s:1-Z.o*.1,bl:Z.o*14,rz:2});
+    const O=pop(oppo,t,10.55,13.1,{y:-240,rz:-5+2*Math.sin(t*2)});
+    stars.forEach((s,k)=>pop(s.e,t,10.7+k*.12,13.1,{x:s.x,y:s.y-240,rz:t*40*(k%2?1:-1)})); }
+
+  /* S2 map */
+  { const M=life(t,13.2,17.85,.55,.35); set(map,{y:-330,rx:(1-M.i)*40,s:lerp(.8,1,M.i),o:M.on?M.i*(1-M.o):0,bl:M.o*14});
+    map.querySelector('#rd1').style.strokeDasharray=1400;map.querySelector('#rd1').style.strokeDashoffset=1400*(1-eo(p(t,13.3,14.4)));
+    map.querySelector('#rd2').style.strokeDasharray=1000;map.querySelector('#rd2').style.strokeDashoffset=1000*(1-eo(p(t,14.2,15.0)));
+    map.querySelector('#lot').style.strokeDashoffset=620*(1-eo(p(t,13.5,14.2)));
+    const d=eo(p(t,13.4,13.8)); map.querySelector('#mpin').style.transform=`translateY(${(1-d)*-500-Math.abs(Math.sin(p(t,13.8,14.2)*Math.PI))*30}px)`;
+    [['#mt1',13.45],['#mt2',14.3],['#mt3',16.1]].forEach(([id,a])=>{const q=back(p(t,a,a+.4));const e=map.querySelector(id);e.style.transform=`scale(${cl(q,0,2)})`;e.style.opacity=p(t,a,a+.1)});
+    std(arr,t,15.3,17.85,{y:180,dy:60}); pop(litt,t,16.95,17.85,{y:320}); }
+
+  /* S3 hectare (footage) */
+  { hpoly.style.strokeDashoffset=2400*(1-eo(p(t,18.0,19.0))); set(hecSvg,{o:p(t,17.95,18.1)*(1-p(t,20.3,20.6))});
+    const L=std(hec,t,18.0,20.55,{y:-520,dy:40}); $('hn').textContent=t<18.5?'0':'1'; $('demi').style.opacity=p(t,18.9,19.1); $('demi').style.transform=`scale(${cl(back(p(t,18.9,19.3)),0,2)})`;
+    pop(vente,t,19.85,20.55,{y:150,rz:-3}); }
+
+  /* S4 axe */
+  { const on=t>20.6&&t<26.05; const L=life(t,20.65,26.0,.5,.35);
+    set(axe,{y:120,o:L.on?L.i*(1-L.o):0}); axL.style.strokeDasharray=1600; axL.style.strokeDashoffset=1600*(1-eo(p(t,21.8,23.0))); axD.style.strokeDashoffset=-((t*80)%96); axD.style.opacity=p(t,22.6,23);
+    std(site,t,20.9,26.0,{y:250,dy:40}); std(axLab,t,21.8,26.0,{y:-120,dy:30});
+    std(port,t,23.3,26.0,{x:-240,y:-470,dy:80,rz:-3}); std(ciment,t,24.7,26.0,{x:240,y:-470,dy:80,rz:3});
+    dots.forEach((d,k)=>{if(!on||t<23.0){d.style.visibility='hidden';return}d.style.visibility='visible';const ph=((t-23)*.6+k*.25)%1;const y=CY+120+(1040-550)-ph*520-550;const side=k%2?1:-1;
+      const yy=CY+120-550+1040-ph*(1040-520); const x=CX+(ph>.85?side*(ph-.85)/.15*200:0); d.style.transform=`translate(${x-13}px,${(ph>.85?CY+120-550+520-(ph-.85)/.15*150:yy)-13}px)`;d.style.opacity=L.i*(1-L.o)}); }
+
+  /* S5 idéal */
+  { pop(idealP,t,26.3,29.65,{y:-600,rz:-3}); const C=life(t,27.4,29.65,.5,.35); set(chart,{y:-150,rx:(1-C.i)*-60,o:C.on?C.i*(1-C.o):0,bl:C.o*14});
+    bars.forEach((b,k)=>b.style.height=(2.6*b.dataset.h*eo(p(t,28.1+k*.1,28.7+k*.1)))+'px'); carr.style.strokeDashoffset=900*(1-eo(p(t,28.6,29.3))); }
+
+  /* S6 15 000 m² (footage) */
+  { std(m2,t,29.9,33.5,{y:-480,dy:40}); $('m2n').textContent=fmt(15000*eo(p(t,30.37,31.1))); set(topo,{o:.6*p(t,31.9,32.3)*(1-p(t,33.2,33.5)),s:1+.03*Math.sin(t)});
+    pop(relief,t,31.95,33.5,{y:170,rz:-2}); }
+
+  /* S7 carousel under spotlight */
+  { const L=life(t,33.6,40.45,.6,.4); let idx=0; carT.forEach((a,k)=>{idx=k==0?0:idx+eio(p(t,a,a+.5))}); idx=cl(idx,0,2);
+    CAR.forEach((e,k)=>{const d=k-idx;set(e,{x:d*470,y:-140+(1-L.i)*500,s:(1-.32*Math.min(1,Math.abs(d)))*(1+.02*Math.sin(t*2)),ry:-d*25,o:L.on?L.i*(1-L.o)*(1-.45*Math.min(1,Math.abs(d))):0,bl:Math.min(1,Math.abs(d))*3+L.o*14});e.style.zIndex=10-Math.round(Math.abs(d)*2)});
+    $('lotn').textContent=fmt(250*eo(p(t,34.85,35.4))); }
+
+  /* S8 prix */
+  { std(prixU,t,41.3,44.55,{y:-560,dy:30}); const P=life(t,42.1,44.55,.4,.35); set(prixC,{y:-250,s:lerp(1.3,1,P.i)*(1-P.o*.1),rz:-2,o:P.on?P.i*(1-P.o):0,bl:(1-P.i)*14+P.o*14});
+    $('pn').textContent=fmt(5000*eo(p(t,42.21,42.8))); $('pf').style.opacity=p(t,42.6,42.75); $('pm').style.opacity=p(t,43.3,43.45);
+    pstars.forEach((s,k)=>pop(s.e,t,42.3+k*.1,44.55,{x:s.x,y:s.y-250,rz:t*40*(k%2?1:-1)}));
+    const q=p(t,44.6,44.78); set(ferme,{y:-220,rz:-8,s:lerp(2.6,1,ei(q)),o:(t>44.6?1:0)*(1-ei(p(t,46.6,47.05))),bl:(1-q)*8});
+    pop(nonneg,t,45.55,47.05,{y:20,rz:3}); }
+
+  /* S9 profils */
+  { prof.forEach((e,k)=>flip(e,t,profT[k],52.0,{y:profY[k],rz:profZ[k]}));
+    const M=std(moment,t,50.35,52.0,{y:0,dy:60}); $('posi').style.opacity=p(t,51.2,51.4); }
+
+  /* S10 valeur */
+  { std(natt,t,52.2,55.1,{y:-560,dy:50,s0:1.3}); const V=life(t,52.9,55.1,.5,.35); set(val,{y:-130,o:V.on?V.i*(1-V.o):0,rx:(1-V.i)*-50,bl:V.o*14});
+    vl.style.strokeDashoffset=1000*(1-eo(p(t,53.0,54.2))); va.style.opacity=p(t,53.6,54.2); vc.style.transform=`scale(${cl(back(p(t,54.1,54.5)),0,2)})`; vc.style.transformOrigin='820px 50px';
+    pop(valeur,t,54.15,55.1,{y:180,rz:-2}); }
+
+  /* S11 contact */
+  { std(ctT,t,55.3,60.25,{y:-650,dy:40}); pop(phoneC,t,56.1,60.25,{y:-450}); std(mailC,t,56.9,60.25,{y:-300,dy:30});
+    const V=life(t,58.0,60.25,.5,.35); set(v11.e,{y:20,rx:(1-V.i)*40,o:V.on?V.i*(1-V.o):0,bl:V.o*14}); if(V.on) draw(v11.c,'cta',t-58,1.1);
+    pop(visite,t,58.6,60.25,{y:240,rz:-2}); }
+
+  /* S12 end */
+  { const fin=1-p(t,68.5,69); const P=eo(p(t,60.3,61.0)); set(ped,{y:260+(1-P)*400,o:(t>60.3?1:0)*fin});
+    const q=eo(p(t,60.5,61.4)); set(logoE,{y:lerp(250,-170,q)+5*Math.sin(t*1.5),s:lerp(.4,1,q),o:(t>60.5?1:0)*fin,rz:(1-q)*8}); $('shine').style.left=lerp(-300,800,eio(p(t,61.4,62.4)))+'px';
+    set(sl1,{y:-620,o:(t>61.9?1:0)*fin}); set(sl2,{y:540,o:(t>63.0?1:0)*fin});
+    [[sl1,[61.97,62.31]],[sl2,[63.07,63.57,63.69]]].forEach(([el,ts])=>[...el.querySelectorAll('.w')].forEach((w,k)=>{const qq=eo(p(t,ts[k]-.05,ts[k]+.45));w.style.display='inline-block';w.style.transform=`translateY(${(1-qq)*50}px)`;w.style.opacity=qq;w.style.filter=qq<.98?`blur(${(1-qq)*10}px)`:'none'}));
+    pop(tel,t,64.6,69.2,{y:680}); set(mail2,{y:780,o:eo(p(t,65.2,65.8))*fin}); if(t>68.5) tel.style.opacity=fin; }
+
+  fx(t);
+  /* TikTok subtitles */
+  let g=-1;for(let k=0;k<G.length;k++){const a=W[G[k][0]][1]-.06,b=k+1<G.length?Math.min(W[G[k+1][0]][1]-.06,W[G[k].at(-1)][2]+.5):W[G[k].at(-1)][2]+.6;if(t>=a&&t<b){g=k;break}}
+  if(SUB_HIDE.some(([a,b])=>t>a&&t<b))g=-1;
+  if(g!==curG){curG=g;subs.innerHTML=g<0?'':G[g].map(i=>`<span>${W[i][0]}</span>`).join(' ')}
+  if(g>=0){const gs=W[G[g][0]][1]-.06;const gi=back(p(t,gs,gs+.22));subs.style.opacity=1;subs.style.transform=`scale(${cl(gi,0,1.2)}) rotate(${(g%2?1:-1)*1.2}deg)`;
+    [...subs.children].forEach((sp,j)=>{const w=W[G[g][j]];const act=t>=w[1]-.03;const cur=act&&(j==G[g].length-1||t<W[G[g][j+1]][1]-.03);
+      sp.style.color=cur?'#ffd400':'#fff';sp.style.transform=`scale(${cur?1+.1*cl(back(p(t,w[1]-.03,w[1]+.18)),0,1.3):1})`;sp.style.opacity=act?1:.55})}
+  else subs.style.opacity=0;
+};
+</script>
+</body>
+</html>
