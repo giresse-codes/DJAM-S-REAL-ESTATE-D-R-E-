@@ -50,7 +50,7 @@ sil_sp=[to_speech(s) for s,e in sil]
 bpred=[cum[b]/cum[-1]*S for b in bounds]
 # DP: match silences (in order) to boundaries (in order); silence may be skipped (penalty), boundary may be unmatched (free)
 nS,nB=len(sil),len(bounds); INF=1e9
-skip_pen=lambda j:3.0*(sil[j][1]-sil[j][0])+0.6
+skip_pen=lambda j:40.0*(sil[j][1]-sil[j][0])+1.0
 D=np.full((nS+1,nB+1),INF); D[0,:]=0; bk={}
 for j in range(1,nS+1):
     for k in range(0,nB+1):

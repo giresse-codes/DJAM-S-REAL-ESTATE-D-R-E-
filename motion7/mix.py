@@ -70,16 +70,18 @@ def section(a, b, prog, kick_on=True, arp=True, drums=False, g_pad=.05, g_arp=.0
                 hat(tb + B / 4)
                 if hat16: hat(tb + B / 8, .05); kick(tb + B / 4, .25) if j % 2 else None
         x += bar; k += 1
-pad([45, 52, 57], 0.0, 2.75, .05)
-section(2.75, 19.3, UP, kick_on=True, arp=True, g_arp=.06)
-section(19.3, 26.0, UP, drums=True, g_arp=.06)
-section(26.0, 37.6, UP, drums=True, g_arp=.08)
-kick(37.8, .4); kick(38.05, .28)
-section(38.3, 41.4, UP, drums=True, hat16=True, g_arp=.07)
-section(41.4, 52.7, UP, drums=True, g_arp=.07)
-section(52.7, 59.5, DOWN, drums=True, g_arp=.06)
-pad([48, 55, 60, 64, 67], 59.8, 8.2, .06); place1(tone(note(24), 8.2, att=.05, harm=(1, .4)), 59.8, .3)
-for j in range(14): pluck([72, 76, 79, 84][j % 4], 60.1 + j * .5, .035 * (1 - j / 14))
+pad([45, 52, 57], 0.0, 5.2, .045)
+section(1.0, 5.2, UP, kick_on=False, arp=True, g_arp=.05)
+section(5.2, 12.2, UP, kick_on=True, arp=True, g_arp=.06)
+section(12.2, 21.7, UP, drums=True, g_arp=.06)
+section(21.7, 31.4, DOWN, drums=True, g_arp=.06)
+section(31.4, 45.2, UP, drums=True, g_arp=.08)
+kick(45.35, .4); kick(45.6, .28)
+section(45.8, 48.4, UP, drums=True, hat16=True, g_arp=.08)
+section(48.4, 61.7, DOWN, drums=True, g_arp=.06)
+section(61.7, 72.4, UP, drums=True, g_arp=.07)
+pad([48, 55, 60, 64, 67], 72.6, 9.4, .06); place1(tone(note(24), 9.4, att=.05, harm=(1, .4)), 72.6, .3)
+for j in range(16): pluck([72, 76, 79, 84][j % 4], 72.9 + j * .5, .035 * (1 - j / 16))
 mus /= np.abs(mus).max()
 # reverb-ish smear (cheap FFT convolution)
 def fftconv(a, b):
@@ -97,23 +99,12 @@ music *= (0.55 - 0.32 * env)[:, None]
 music *= (np.clip(t / 0.5, 0, 1) * np.clip((D - t) / 1.2, 0, 1))[:, None]
 
 # ---------------- SFX (HyperFrames / Pixabay library) ----------------
-SFX = [
- (0.2,'whoosh-cinematic',.3),(0.6,'click-soft',.25),(1.0,'whoosh-short',.35),(2.25,'sparkle',.3),(2.7,'whoosh',.45),(2.95,'typing',.35),(4.4,'click',.5),
- (4.84,'whoosh-short',.35),(5.0,'pop',.4),(5.4,'pop',.3),(5.9,'pop',.35),(6.1,'pop',.4),(8.4,'pop',.4),(8.45,'typing',.2),(9.9,'pop',.4),
- (10.6,'whoosh',.45),(12.16,'pop',.4),(12.3,'pop',.3),(13.76,'pop',.4),(14.9,'whoosh-short',.3),(15.74,'pop',.4),(17.36,'pop',.4),(18.52,'pop',.4),
- (19.3,'whoosh',.45),(20.62,'ping',.35),(21.95,'ping',.35),(22.1,'pop',.3),(22.85,'whoosh-short',.3),(24.75,'glitch-1',.2),(25.26,'impact-bass-1',.7),
- (26.0,'whoosh',.45),(27.93,'pop',.4),(28.40,'pop',.4),(29.83,'pop',.4),(31.16,'pop',.4),(32.14,'pop',.4),(33.53,'pop',.4),(35.19,'pop',.4),(36.36,'pop',.4),(36.5,'pop',.3),
- (38.3,'whoosh-short',.35),(38.35,'typing',.3),(39.0,'impact-bass-2',.6),(39.05,'pop',.45),(39.14,'typing',.2),(39.8,'chime',.4),(39.85,'pop',.3),
- (41.4,'whoosh',.45),(41.9,'whoosh-short',.3),(44.3,'whoosh-short',.3),(45.4,'sparkle',.3),
- (46.7,'whoosh',.45),(46.85,'pop',.4),(47.3,'pop',.3),(49.1,'notification',.45),(49.7,'pop',.3),(50.0,'pop',.3),(51.45,'pop',.35),
- (52.7,'whoosh',.45),(53.56,'click',.5),(54.56,'click',.5),(55.3,'pop',.4),(56.1,'whoosh-short',.3),(57.2,'pop',.3),
- (59.6,'whoosh-cinematic',.45),(59.95,'impact-bass-1',.9),(60.0,'chime',.4),(61.4,'sparkle',.3),(64.0,'pop',.3),
-]
+SFX = [(0.05, 'whoosh-cinematic', 0.35), (0.3, 'pop', 0.25), (0.6, 'pop', 0.25), (0.9, 'pop', 0.25), (2.55, 'sparkle', 0.3), (2.7, 'pop', 0.3), (3.3, 'pop', 0.35), (5.0, 'whoosh-cinematic', 0.45), (6.0, 'whoosh-short', 0.4), (5.75, 'typing', 0.25), (6.6, 'pop', 0.4), (7.5, 'pop', 0.4), (9.5, 'pop', 0.4), (12.2, 'whoosh', 0.45), (14.29, 'pop', 0.4), (16.01, 'pop', 0.4), (16.2, 'pop', 0.3), (18.39, 'pop', 0.4), (19.86, 'pop', 0.4), (20.94, 'pop', 0.4), (21.7, 'whoosh', 0.45), (22.12, 'click-soft', 0.35), (23.05, 'ping', 0.25), (24.1, 'click-soft', 0.35), (25.42, 'ping', 0.25), (26.56, 'click-soft', 0.35), (27.55, 'ping', 0.25), (28.48, 'click-soft', 0.35), (28.68, 'ping', 0.25), (29.99, 'click-soft', 0.35), (30.42, 'ping', 0.25), (30.5, 'pop', 0.3), (31.4, 'whoosh', 0.45), (32.77, 'pop', 0.4), (35.03, 'pop', 0.4), (36.75, 'pop', 0.4), (38.91, 'pop', 0.4), (40.64, 'pop', 0.4), (42.87, 'pop', 0.4), (45.6, 'whoosh-short', 0.35), (46.05, 'impact-bass-2', 0.6), (46.65, 'typing', 0.25), (47.3, 'chime', 0.4), (46.9, 'pop', 0.3), (48.4, 'whoosh', 0.45), (49.5, 'whoosh-short', 0.3), (51.6, 'whoosh-short', 0.3), (57.0, 'sparkle', 0.3), (58.0, 'whoosh', 0.45), (58.41, 'pop', 0.35), (58.65, 'pop', 0.35), (60.11, 'pop', 0.35), (61.7, 'whoosh', 0.45), (63.57, 'pop', 0.4), (63.8, 'click', 0.45), (65.82, 'pop', 0.4), (66.1, 'click', 0.45), (70.11, 'notification', 0.4), (70.5, 'pop', 0.3), (72.5, 'whoosh-cinematic', 0.45), (72.75, 'impact-bass-1', 0.9), (72.8, 'chime', 0.4), (76.9, 'sparkle', 0.3), (77.6, 'pop', 0.3)]
 fx = np.zeros((N, 2)); cache = {}
 for at, name, g in SFX:
     if name not in cache: cache[name] = load(f'assets/sfx/{name}.mp3')
     place(fx, cache[name], at, g)
-riser = load('assets/sfx/riser.mp3'); place(fx, riser[-int(3.0 * SR):], 56.95, .25)
+riser = load('assets/sfx/riser.mp3'); place(fx, riser[-int(3.0 * SR):], 69.75, .22)
 fx *= 0.6 / max(1e-9, np.percentile(np.abs(fx), 99.9))
 # keep effects under the voice too (lighter duck)
 fx *= (1 - 0.35 * env)[:, None]
