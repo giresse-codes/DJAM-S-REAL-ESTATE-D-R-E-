@@ -50,7 +50,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-f
 <div id="world">
   <div class="full" style="background:radial-gradient(ellipse 90% 70% at 50% 115%,#0d4fae 0%,#082a63 30%,#050b16 70%)"></div>
   <div id="glow" class="full" style="background:radial-gradient(circle at 50% 50%,rgba(47,140,255,.18),rgba(47,140,255,0) 45%)"></div>
-  <canvas id="bgv" width="480" height="270" style="position:absolute;inset:0;width:100%;height:100%;filter:blur(18px) brightness(.42) saturate(1.2);transform:scale(1.15);opacity:0"></canvas>
+  <div id="bgw" style="position:absolute;inset:0;opacity:0"><canvas id="bgv" width="1920" height="1080" style="position:absolute;inset:0"></canvas><div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,11,22,0) 35%,rgba(5,11,22,.35) 58%,rgba(5,11,22,.72) 100%),linear-gradient(180deg,rgba(5,11,22,.15),rgba(5,11,22,0) 25%,rgba(5,11,22,0) 75%,rgba(5,11,22,.55))"></div></div>
   <div id="sc" class="full"></div>
 </div>
 <div id="leak"></div><div id="flare"></div><div id="bursts" class="full"></div><div id="rx" class="full"></div>
@@ -78,10 +78,10 @@ const fmt=n=>Math.round(n).toLocaleString('fr-FR').replace(/ | /g,' ');
 function words(el,t,ts){[...el.querySelectorAll('.w')].forEach((w,k)=>{const a=ts[k]??ts.at(-1);const q=eo(p(t,a-.08,a+.32));w.style.opacity=q;w.style.transform=`translateY(${(1-q)*26}px)`;w.style.filter=q<.98?`blur(${(1-q)*14}px)`:'none'})}
 const WT=i=>window.WORDS[i][1];
 /* ---------- terrain footage (vertical) ---------- */
-const CLIPS={r1:105,r2:120,r3:121}, IMG={}, loads=[];
+const CLIPS={j1:207,j2:216}, IMG={}, loads=[];
 for(const [k,n] of Object.entries(CLIPS)){IMG[k]=[];for(let i=1;i<=n;i++){const im=new Image();im.src=`assets/clips/${k}/${String(i).padStart(3,'0')}.jpg`;IMG[k].push(im);loads.push(im.decode().catch(()=>{}))}}
 function frame(k,lt){const a=IMG[k],n=a.length,f=Math.floor(lt*30)%(2*n-2),i=f<n?f:2*n-2-f;return a[Math.max(0,Math.min(n-1,i))]}
-function drawCover(cv,im){const c=cv.getContext('2d'),w=cv.width,h=cv.height,s=Math.max(w/464,h/832);c.drawImage(im,(w-464*s)/2,(h-832*s)/2,464*s,832*s)}
+function drawCover(cv,im,z=1){const c=cv.getContext('2d'),w=cv.width,h=cv.height,s=Math.max(w/1280,h/720)*z;c.drawImage(im,(w-1280*s)/2,(h-720*s)/2,1280*s,720*s)}
 const COLS=['#0d4fae','#0f766e','#7c3aed','#b45309','#be123c','#0369a1'];
 
 /* ---------- S0 floating covers + location ---------- */
@@ -90,12 +90,8 @@ const COVERS=[];{const r=rnd(4);const pos=[[-640,-260],[-760,110],[-470,300],[61
 const h0=H('<div class="abs head"><span class="w">Douala,</span><br><span class="w hl">Japoma-Bakoko</span></div>');
 const h0b=H(`<div class="abs" style="display:flex;align-items:center;gap:16px;font-size:44px;font-weight:600;white-space:nowrap"><img src="${E('1f4cd')}" style="width:56px">3e arrondissement</div>`);
 
-/* ---------- portrait terrain video card ---------- */
-const pv=H(`<div class="abs" style="width:470px;height:840px;border-radius:34px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 3px rgba(124,196,255,.35)"><canvas width="470" height="840" style="display:block"></canvas>
- <div style="position:absolute;left:18px;right:18px;top:296px;height:84px;border-radius:22px;background:rgba(5,11,22,.82);backdrop-filter:blur(6px);display:flex;align-items:center;gap:12px;padding:0 18px;font-size:24px;font-weight:800;white-space:nowrap"><img src="${E('1f4cd')}" style="width:40px">Le terrain · Japoma-Bakoko</div>
- <div style="position:absolute;left:18px;bottom:18px;padding:8px 16px;border-radius:999px;background:#ef4444;font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px"><i style="width:10px;height:10px;border-radius:50%;background:#fff;display:inline-block"></i>VIDÉO DU SITE</div></div>`);
-const pvc=pv.querySelector('canvas');
-
+/* ---------- terrain badges (footage is full-screen) ---------- */
+const pv=H(`<div class="abs" style="display:flex;flex-direction:column;gap:14px;align-items:flex-start"><div style="display:flex;align-items:center;gap:12px;padding:14px 26px 14px 16px;border-radius:999px;background:rgba(5,11,22,.72);font-size:30px;font-weight:800;white-space:nowrap"><img src="${E('1f4cd')}" style="width:44px">Le terrain · Japoma-Bakoko</div><div style="padding:8px 18px;border-radius:999px;background:#ef4444;font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px"><i id="rec" style="width:12px;height:12px;border-radius:50%;background:#fff;display:inline-block"></i>VIDÉO DU SITE</div></div>`);
 /* ---------- S1 now-playing: 5 000 m² ---------- */
 const card1=H(`<div class="abs now" style="display:flex;gap:34px;align-items:center;width:1300px">
  <div style="width:460px;height:380px;border-radius:22px;overflow:hidden;flex:none;background:#0e1a2e">
@@ -169,14 +165,14 @@ window.render=function(t){
     const A=life(t,.9,4.75,.3,.45); set(h0,{y:-70,o:A.on?(1-A.o):0,bl:A.o*14,s:1+A.o*.2}); words(h0,t,[WT(0),WT(1)]);
     std(h0b,t,WT(4)-.1,4.75,{y:120,dy:30}); }
 
-  /* terrain footage: 4.8–18.4 s (≈13.5 s) */
-  { const V=life(t,4.75,18.45,.6,.45); const k=t<11.45?'r1':'r2', lt=t<11.45?t-4.75:t-11.45; const sw=p(t,11.25,11.65)*(1-p(t,11.65,12.05));
-    $('bgv').style.opacity=V.on?.95*V.i*(1-V.o):0;
-    if(V.on){const im=frame(k,lt);drawCover($('bgv'),im);drawCover(pvc,im)}
-    set(pv,{x:-520,y:-20+(1-V.i)*120+V.o*-60,ry:lerp(18,6,V.i)+2*Math.sin(t*.7),s:1-.04*sw,o:V.on?V.i*(1-V.o):0,bl:V.o*12+sw*6}); }
+  /* terrain footage, full screen: 4.8–18.4 s (≈13.5 s) */
+  { const V=life(t,4.75,18.45,.6,.45); const k=t<11.45?'j1':'j2', lt=t<11.45?t-4.75:t-11.45;
+    $('bgw').style.opacity=V.on?V.i*(1-V.o):0; $('bgw').style.visibility=V.on?'visible':'hidden';
+    if(V.on) drawCover($('bgv'),frame(k,lt),1.04+.05*(t<11.45?p(t,4.75,11.45):p(t,11.45,18.45)));
+    set(pv,{x:-560,y:-410,o:V.on?V.i*(1-V.o):0,bl:V.o*10}); $('rec').style.opacity=Math.floor(t*2)%2?1:.25; }
 
   /* S1 */
-  { const C=life(t,4.8,11.45,.6,.4); set(card1,{x:330,y:-40+(1-C.i)*80,s:.78*lerp(.85,1,C.i)*(1-C.o*.08),o:C.on?C.i*(1-C.o):0,bl:(1-C.i)*12+C.o*12,rx:(1-C.i)*12});
+  { const C=life(t,4.8,11.45,.6,.4); set(card1,{x:440,y:-40+(1-C.i)*80,s:.7*lerp(.85,1,C.i)*(1-C.o*.08),o:C.on?C.i*(1-C.o):0,bl:(1-C.i)*12+C.o*12,rx:(1-C.i)*12});
     $('m2').textContent=fmt(5000*eo(p(t,WT(6),WT(6)+.7))); $('pg1').style.width=(100*p(t,4.8,11.4))+'%';
     pl.style.strokeDashoffset=1300*(1-eo(p(t,5.0,6.0)));
     sub.style.opacity=p(t,WT(14),WT(14)+.3); sub.style.strokeDashoffset=-t*30;
@@ -184,9 +180,9 @@ window.render=function(t){
     CH.forEach(c=>{const q=back(p(t,c.t0,c.t0+.35));c.d.style.transform=`scale(${cl(q,0,2)})`;c.d.style.opacity=p(t,c.t0,c.t0+.08)}); }
 
   /* S2 */
-  { const L=life(t,11.55,18.4,.5,.4); set(tlHead,{x:250,s:.82,y:-260+(1-L.i)*40,o:L.on?L.i*(1-L.o):0,bl:L.o*10});
+  { const L=life(t,11.55,18.4,.5,.4); set(tlHead,{x:400,s:.72,y:-260+(1-L.i)*40,o:L.on?L.i*(1-L.o):0,bl:L.o*10});
     TRK.forEach(r=>{const R=life(t,11.65+r.k*.12,18.4,.4,.4);const act=t>=r.a-.05&&t<r.b, done=t>=r.a;
-      set(r.e,{x:250,s:.82,y:-50+r.k*110+(1-R.i)*30,o:R.on?R.i*(1-R.o):0,bl:R.o*8});
+      set(r.e,{x:400,s:.72,y:-60+r.k*100+(1-R.i)*30,o:R.on?R.i*(1-R.o):0,bl:R.o*8});
       r.e.style.background=act?'rgba(47,140,255,.16)':'transparent'; r.e.querySelector('.tx').style.color=act?'#7cc4ff':done?'#fff':'#c9d6ec';
       r.e.querySelector('.n').style.display=act?'none':'block'; r.e.querySelector('.eq').style.display=act?'flex':'none';
       [...r.e.querySelectorAll('.eq i')].forEach((b,j)=>b.style.height=(32*(.3+.7*Math.abs(Math.sin(t*8+j*1.7))))+'px');
