@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>DRE Yassa 2000 m2</title>
+<style>
+@font-face{font-family:M;src:url(assets/montserrat-latin-400-normal.woff2);font-weight:400}
+@font-face{font-family:M;src:url(assets/montserrat-latin-600-normal.woff2);font-weight:600}
+@font-face{font-family:M;src:url(assets/montserrat-latin-800-normal.woff2);font-weight:800}
+@font-face{font-family:P;src:url(assets/playfair-display-latin-700-italic.woff2);font-weight:700;font-style:italic}
+:root{--navy:#14215e;--blue:#1f7fe0;--sky:#7fa6ff;--gold:#f5c451;--ink:#0d1533}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0e1745;font-family:M,sans-serif;color:var(--ink)}
+#world{position:absolute;inset:0;overflow:hidden}
+.abs{position:absolute;left:50%;top:50%;will-change:transform,opacity,filter}
+.full{position:absolute;inset:0}
+.layer{position:absolute;inset:0;opacity:0}
+.head{font-weight:800;font-size:92px;line-height:1.05;letter-spacing:-2.5px;text-align:center;width:980px}
+.head .w{display:inline-block;margin:0 .1em}
+.hl{color:var(--blue)} .navy .hl,.ov .hl{color:var(--sky)}
+.ov{color:#fff;text-shadow:0 6px 30px rgba(0,0,0,.55)}
+.card{background:#fff;border-radius:40px;box-shadow:0 30px 80px rgba(10,20,60,.28),0 4px 14px rgba(10,20,60,.08);color:var(--ink)}
+.glass{background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.35);backdrop-filter:blur(14px);border-radius:999px;color:#fff}
+.pill{display:inline-flex;align-items:center;gap:16px;padding:18px 34px 18px 20px;border-radius:999px;font-size:40px;font-weight:800;white-space:nowrap}
+.pill img{width:52px;height:52px}
+.ck{width:54px;height:54px;border-radius:50%;background:#22c55e;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:32px;font-weight:800}
+.tile{width:470px;height:250px;border-radius:34px;display:flex;flex-direction:column;justify-content:space-between;padding:26px 28px}
+.tile img{width:76px;height:76px}
+.tile b{font-size:34px;line-height:1.12;color:var(--navy)}
+.stamp{padding:14px 38px;border:9px solid #fff;border-radius:22px;font-size:76px;font-weight:800;letter-spacing:3px;white-space:nowrap;color:#fff;background:#e11d48;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+#subs{position:absolute;left:40px;right:40px;top:1490px;text-align:center;font-weight:800;font-size:76px;line-height:1.08;text-transform:uppercase;letter-spacing:-1px}
+#subs span{display:inline-block;margin:0 .13em;color:#fff;-webkit-text-stroke:11px #0b1233;paint-order:stroke fill;filter:drop-shadow(0 7px 0 rgba(11,18,51,.4))}
+.react{width:140px;height:140px}.react img{width:100%;height:100%;filter:drop-shadow(0 12px 16px rgba(0,0,0,.35))}
+.ring{position:absolute;left:50%;top:50%;width:140px;height:140px;margin:-70px 0 0 -70px;border-radius:50%;border:6px solid #fff}
+.burst{position:absolute;left:0;top:0;width:0;height:0}
+.burst i{position:absolute;left:-4px;width:8px;border-radius:4px;background:#fff;box-shadow:0 0 12px #7fa6ff;transform-origin:4px 0}
+#grain{position:absolute;inset:0;mix-blend-mode:overlay;opacity:.08;pointer-events:none}
+#leak{position:absolute;inset:-20%;mix-blend-mode:screen;opacity:0;pointer-events:none;background:radial-gradient(ellipse 40% 60% at 30% 40%,rgba(255,180,90,.75),rgba(255,150,60,0) 70%),radial-gradient(ellipse 35% 50% at 70% 60%,rgba(120,170,255,.8),rgba(120,170,255,0) 70%)}
+#flare{position:absolute;left:0;right:0;height:10px;top:50%;margin-top:-5px;background:linear-gradient(90deg,rgba(127,166,255,0),#fff 50%,rgba(127,166,255,0));box-shadow:0 0 50px 16px rgba(127,166,255,.5);opacity:0;mix-blend-mode:screen}
+#flash{position:absolute;inset:0;background:#fff;opacity:0}
+#bar{position:absolute;left:0;top:0;height:10px;width:0;background:linear-gradient(90deg,#7fa6ff,#f5c451)}
+</style>
+</head>
+<body>
+<div id="world">
+  <div id="L_navy" class="layer navy" style="background:radial-gradient(ellipse at 50% 30%,#1c2c78,#14215e 55%,#0b1235)"></div>
+  <div id="L_light" class="layer" style="background:linear-gradient(180deg,#f7f9fd,#e7eefb)"></div>
+  <div id="L_foot" class="layer"><canvas id="fv" width="1080" height="1920" style="position:absolute;inset:0"></canvas><div class="full" style="background:linear-gradient(180deg,rgba(8,14,40,.55),rgba(8,14,40,0) 28%,rgba(8,14,40,0) 62%,rgba(8,14,40,.7))"></div></div>
+  <div id="sc" class="full"></div>
+</div>
+<div id="flash"></div><div id="leak"></div><div id="flare"></div><div id="bursts" class="full"></div><div id="rx" class="full"></div>
+<div id="subs"></div>
+<div id="bar"></div>
+<div id="grain"></div>
+<svg width="0" height="0" style="position:absolute"><filter id="ca" x="0" y="0" width="100%" height="100%"><feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="r"/><feOffset in="r" id="caR" dx="0" result="ro"/><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" result="g"/><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0" result="b"/><feOffset in="b" id="caB" dx="0" result="bo"/><feBlend in="ro" in2="g" mode="screen" result="rg"/><feBlend in="rg" in2="bo" mode="screen"/></filter></svg>
+<script src="words.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), p=(t,a,b)=>cl((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,4), ei=x=>x*x*x, eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back=x=>{const c=1.9;return x<=0?0:1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,x)=>a+(b-a)*x, CX=540, CY=960;
+function rnd(s){return function(){s=(s*16807)%2147483647;return (s-1)/2147483646}}
+function set(el,{x=0,y=0,s=1,rx=0,ry=0,rz=0,o=1,bl=0}){
+  el.style.transform=`translate(-50%,-50%) translate3d(${x}px,${y}px,0) rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${s})`;
+  el.style.opacity=o; el.style.filter=bl>0.05?`blur(${bl}px)`:'none'; el.style.visibility=o<=0.002?'hidden':'visible';}
+function life(t,a,b,ai=.5,bo=.4){return {i:eo(p(t,a,a+ai)),o:ei(p(t,b-bo,b)),on:t>a-.01&&t<b+.01}}
+function std(el,t,a,b,{x=0,y=0,dy=50,s0=.95,bl0=12,dyo=-40,so=1,rz=0}={}){const L=life(t,a,b);
+  set(el,{x,y:y+(1-L.i)*dy+L.o*dyo,s:lerp(s0,1,L.i)*lerp(1,so,L.o),rz,o:L.on?L.i*(1-L.o):0,bl:(1-L.i)*bl0+L.o*bl0});return L}
+function pop(el,t,a,b,{x=0,y=0,rz=0,s=1}={}){const L=life(t,a,b,.45,.35);set(el,{x,y:y+L.o*-30,s:s*cl(back(p(t,a,a+.45)),0,2)*(1-L.o*.1),rz,o:L.on?cl(p(t,a,a+.12))*(1-L.o):0,bl:L.o*10});return L}
+const H=html=>{const d=document.createElement('div');d.innerHTML=html.trim();const e=d.firstChild;$('sc').appendChild(e);return e};
+const E=c=>`assets/emoji2/${c}.svg`;
+const fmt=n=>Math.round(n).toLocaleString('fr-FR').replace(/ | /g,' ');
+const W=window.WORDS, G=window.GROUPS;
+// start time of the n-th word whose text begins with s
+function F(s,n=1){let c=0;for(const w of W){if(w[0].startsWith(s)){c++;if(c===n)return w[1]}}throw new Error('word '+s)}
+function words(el,t,ts){[...el.querySelectorAll('.w')].forEach((w,k)=>{const a=ts[k]??ts.at(-1);const q=eo(p(t,a-.08,a+.32));w.style.opacity=q;w.style.transform=`translateY(${(1-q)*28}px)`;w.style.filter=q<.98?`blur(${(1-q)*14}px)`:'none'})}
+const head=(html,cls='')=>H(`<div class="abs head ${cls}">${html}</div>`);
+
+/* ---------- footage ---------- */
+const CLIPS={f1:225,f2:210,f3:346,f4:226,f5:150}, IMG={}, loads=[];
+for(const [k,n] of Object.entries(CLIPS)){IMG[k]=[];for(let i=1;i<=n;i++){const im=new Image();im.src=`assets/clips/${k}/${String(i).padStart(3,'0')}.jpg`;IMG[k].push(im);loads.push(im.decode().catch(()=>{}))}}
+// [clip, start, end] on the timeline — the terrain is the product: ~36 s full screen
+const FOOT=[['f1',0,7.25],['f2',13.75,20.35],['f3',20.35,31.3],['f4',31.3,38.25],['f5',67.6,72.05]];
+const fv=$('fv').getContext('2d');
+function footage(t){let on=null;for(const s of FOOT)if(t>=s[1]-.25&&t<s[2]+.25){on=s;break}
+  let o=0;FOOT.forEach(([k,a,b])=>{o=Math.max(o,p(t,a-.25,a+.15)*(1-p(t,b-.15,b+.25)))});if(FOOT[0][1]===0&&t<.1)o=1;
+  $('L_foot').style.opacity=o;$('L_foot').style.visibility=o>0?'visible':'hidden';
+  if(on){const [k,a,b]=on,arr=IMG[k],im=arr[cl(Math.floor((t-a)*30),0,arr.length-1)];const z=1.03+.07*p(t,a,b)+(k==='f1'&&t<1.6?.25*(1-eo(p(t,0,1.6))):0);
+    fv.drawImage(im,(1080-1080*z)/2,(1920-1920*z)/2,1080*z,1920*z)}
+  return o}
+
+/* ===== HOOK (0–1.6 s, before the voice) ===== */
+const hkTop=H('<div class="abs" style="font-weight:800;font-size:46px;letter-spacing:12px;color:#fff;white-space:nowrap;text-shadow:0 4px 20px rgba(0,0,0,.6)">DOUALA · YASSA</div>');
+const hkBig=H('<div class="abs ov" style="text-align:center;font-weight:800;line-height:.9"><div id="hkN" style="font-size:230px;letter-spacing:-8px;white-space:nowrap">2 000</div><div style="font-size:150px;color:#f5c451;letter-spacing:-4px">m²</div></div>');
+const hkStamp=H('<div class="abs stamp">EXCLUSIVITÉ</div>');
+
+/* ===== S1 footage + kinetic headline ===== */
+const h1x=0;const h1=head('<span class="w">Opportunité</span> <span class="w">foncière</span><br><span class="w hl" style="color:#f5c451">exclusive</span>','ov');
+const pinY=H(`<div class="abs glass pill" style="font-size:52px"><img src="${E('1f4cd')}" style="width:62px;height:62px">Yassa · Douala</div>`);
+const m2b=H('<div class="abs card" style="padding:24px 44px;text-align:center;border-radius:36px"><div style="font-size:24px;letter-spacing:6px;font-weight:600;color:#1f7fe0">SUPERFICIE</div><div style="font-size:110px;font-weight:800;letter-spacing:-3px;color:#14215e;line-height:1"><span id="m2a">0</span> m²</div></div>');
+const hg=H(`<div class="abs glass pill" style="font-size:38px"><img src="${E('2728')}">Environnement haut de gamme</div>`);
+
+/* ===== S2 navy question ===== */
+const h2=head('<span class="w">Un</span> <span class="w">emplacement</span><br><span class="w hl">stratégique</span>');
+const h2b=head('<span class="w">pour</span> <span class="w">un</span> <span class="w">projet</span> <span class="w">immobilier</span><br><span class="w hl">de</span> <span class="w hl">standing</span> <span class="w">à</span> <span class="w">Douala ?</span>');
+h2.style.color=h2b.style.color='#fff'; h2b.style.fontSize='64px';
+const att=H('<div class="abs card" style="padding:30px 46px;text-align:center"><div style="font-size:30px;letter-spacing:6px;font-weight:600;color:#1f7fe0">CETTE OPPORTUNITÉ MÉRITE</div><div style="font-size:72px;font-weight:800;color:#14215e;letter-spacing:-2px;margin-top:6px">toute votre attention</div></div>');
+
+/* ===== S3 location (footage + map card) ===== */
+const locT=H('<div class="abs ov" style="font-size:36px;letter-spacing:12px;font-weight:600;white-space:nowrap">LOCALISATION</div>');
+const map=H(`<div class="abs card" style="width:900px;height:640px;overflow:hidden;padding:0">
+<svg viewBox="0 0 900 640" width="900" height="640"><rect width="900" height="640" fill="#eef3ea"/>
+${Array.from({length:7},(_,i)=>`<path d="M0 ${i*100+30} C 300 ${i*100}, 600 ${i*100+60}, 900 ${i*100+20}" stroke="#e1e9d8" stroke-width="2" fill="none"/>`).join('')}
+<path id="rdA" d="M-20 470 L920 410" stroke="#9aa6b6" stroke-width="34" stroke-linecap="round"/>
+<path id="rdB" d="M640 -20 L600 660" stroke="#9aa6b6" stroke-width="24" stroke-linecap="round"/>
+<circle cx="612" cy="430" r="30" fill="#fff" stroke="#9aa6b6" stroke-width="8"/>
+<rect x="110" y="110" width="250" height="150" rx="14" fill="#c9d6ea"/><text x="235" y="195" text-anchor="middle" font-family="M" font-weight="800" font-size="26" fill="#14215e">Université</text><text x="235" y="228" text-anchor="middle" font-family="M" font-weight="800" font-size="26" fill="#14215e">La Perle</text>
+<path id="lot" d="M140 300 L360 290 L370 380 L150 392Z" fill="rgba(31,127,224,.25)" stroke="#1f7fe0" stroke-width="7" stroke-dasharray="700"/>
+<path id="dist" d="M370 340 C 470 345, 540 380, 600 420" stroke="#e11d48" stroke-width="7" fill="none" stroke-dasharray="16 12"/>
+</svg>
+<img id="mpin" src="${E('1f4cd')}" style="position:absolute;left:205px;top:240px;width:90px">
+<div id="mtA" style="position:absolute;left:110px;top:410px;padding:10px 22px;border-radius:999px;background:#1f7fe0;color:#fff;font-size:30px;font-weight:800">Votre terrain</div>
+<div id="mtB" style="position:absolute;left:520px;top:300px;padding:10px 22px;border-radius:999px;background:#e11d48;color:#fff;font-size:30px;font-weight:800">500 m</div>
+<div id="mtC" style="position:absolute;left:520px;top:500px;padding:10px 22px;border-radius:999px;background:#14215e;color:#fff;font-size:28px;font-weight:800">Carrefour Yassa</div>
+<div style="position:absolute;left:24px;top:22px;padding:8px 18px;border-radius:999px;background:#fff;color:#14215e;font-size:24px;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,.12)">Yassa · Douala 3e</div></div>`);
+
+/* ===== S4 superficie + double façade (footage) ===== */
+const m2c=H('<div class="abs ov" style="text-align:center"><div style="font-size:34px;letter-spacing:10px;font-weight:600">SUPERFICIE TOTALE</div><div style="font-size:170px;font-weight:800;letter-spacing:-6px;line-height:1;white-space:nowrap"><span id="m2b">0</span><span style="font-size:100px;color:#f5c451"> m²</span></div></div>');
+const res=H(`<div class="abs glass pill" style="font-size:36px"><img src="${E('1f3e1')}">Résidentiel haut de gamme</div>`);
+const fac=H(`<div class="abs card" style="width:880px;padding:30px 34px"><div style="font-size:26px;letter-spacing:6px;font-weight:600;color:#1f7fe0">DOUBLE FAÇADE · 2 VOIES</div>
+<svg viewBox="0 0 820 400" width="820" height="400" style="margin-top:14px"><rect width="820" height="400" rx="22" fill="#eef3ea"/>
+<rect x="0" y="300" width="820" height="100" fill="#5b6575"/><path id="cA" d="M0 350 L820 350" stroke="#ffd34d" stroke-width="6" stroke-dasharray="40 26"/>
+<rect x="640" y="0" width="70" height="300" fill="#7b8596"/>
+<path id="plt" d="M90 60 L600 50 L610 290 L80 292Z" fill="rgba(31,127,224,.22)" stroke="#1f7fe0" stroke-width="8" stroke-dasharray="1700"/>
+<text x="345" y="185" text-anchor="middle" font-family="M" font-weight="800" font-size="56" fill="#14215e">2 000 m²</text>
+<g id="lA" opacity="0"><rect x="250" y="320" width="320" height="56" rx="28" fill="#1f7fe0"/><text x="410" y="358" text-anchor="middle" font-family="M" font-weight="800" font-size="30" fill="#fff">Voie principale · 20 m</text></g>
+<g id="lB" opacity="0"><rect x="560" y="120" width="230" height="56" rx="28" fill="#14215e"/><text x="675" y="158" text-anchor="middle" font-family="M" font-weight="800" font-size="30" fill="#fff">Voie · 10 m</text></g>
+</svg></div>`);
+const lA=fac.querySelector('#lA'), lB=fac.querySelector('#lB'), plt=fac.querySelector('#plt');
+
+/* ===== S5 relief (footage) ===== */
+const REL=[['Excellent relief','relief.'],['Terrain sec','sec,'],['Plat','plat'],['Facilement exploitable','facilement']].map(([tx,k])=>({e:H(`<div class="abs card pill" style="font-size:44px;padding:16px 34px 16px 16px"><span class="ck">✓</span>${tx}</div>`),t0:F(k)}));
+const lots=H(`<div class="abs card" style="width:820px;padding:30px"><div style="font-size:26px;letter-spacing:6px;font-weight:600;color:#1f7fe0">MORCELLEMENT POSSIBLE</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px">${[0,1,2,3].map(i=>`<div class="lt" style="height:150px;border-radius:20px;border:5px dashed #1f7fe0;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:800;color:#14215e;background:#eaf2ff">500 m²</div>`).join('')}</div></div>`);
+const LT=[...lots.querySelectorAll('.lt')];
+
+/* ===== S6 idéal pour (light) ===== */
+const h6=head('<span class="w">Emplacement</span> <span class="w">·</span> <span class="w">Configuration</span><br><span class="w hl">Accessibilité</span>'); h6.style.fontSize='62px';
+const h6b=head('<span class="w">Idéal</span> <span class="w hl">pour</span>');
+const IDL=[['1f3e1','Résidences de standing','résidences'],['1f3e2','Immeuble résidentiel ou locatif','immeuble'],['1f6cf','Appartements meublés','appartements'],['1f4c8','Projet à forte valeur ajoutée','projet',2],['1f3e6','Investissement patrimonial','investissement']].map(([e,tx,k,n],i)=>({e:H(`<div class="abs card tile"><img src="${E(e)}"><b>${tx}</b></div>`),t0:F(k,n||1),x:i==4?0:(i%2?255:-255),y:-280+Math.floor(i/2)*285}));
+
+/* ===== S7 price (navy) ===== */
+const prL=H('<div class="abs" style="font-size:40px;letter-spacing:14px;font-weight:600;color:#7fa6ff;white-space:nowrap">PRIX</div>');
+const prC=H('<div class="abs card" style="padding:44px 64px;text-align:center;width:max-content"><div style="font-size:180px;font-weight:800;letter-spacing:-6px;line-height:1;color:#14215e;white-space:nowrap" id="pn">0</div><div style="font-size:56px;font-weight:800;color:#1f7fe0;margin-top:8px">FCFA <span id="pm">/ m²</span></div></div>');
+const notaire=H(`<div class="abs glass pill" style="font-size:38px"><img src="${E('2696')}">Sécurisée par-devant notaire</div>`);
+const exclu=H('<div class="abs stamp" style="font-size:64px">EXCLUSIVITÉ DE VENTE</div>');
+const comm=H('<div class="abs glass pill" style="font-size:38px">Commission d\'agence : <b style="color:#f5c451">&nbsp;5 %</b></div>');
+
+/* ===== S8 brand statement (light) ===== */
+const brLogo=H('<img class="abs" src="assets/logo-light.png" style="width:420px">');
+const br1=head('<span class="w">On</span> <span class="w">ne</span> <span class="w">vend</span> <span class="w">pas</span> <span class="w">seulement</span><br><span class="w">des</span> <span class="w">terrains…</span>'); br1.style.fontSize='64px';
+const br2=head('<span class="w">on</span> <span class="w hl">crée</span> <span class="w">des</span><br><span class="w hl">opportunités.</span>'); br2.style.fontSize='96px';
+
+/* ===== S9 adresse d'exception (footage) ===== */
+const adr=H('<div class="abs ov" style="text-align:center;white-space:nowrap"><div style="font-family:P;font-style:italic;font-weight:700;font-size:84px">Offrez-vous</div><div style="font-weight:800;font-size:88px;letter-spacing:-2px">une adresse <span style="color:#f5c451">d\'exception</span></div></div>');
+
+/* ===== S10 contact (light) ===== */
+const ph=H(`<div class="abs" style="width:620px;height:1060px;border-radius:80px;background:#0d1426;padding:20px;box-shadow:0 40px 90px rgba(20,33,94,.35)"><div style="position:relative;width:100%;height:100%;border-radius:62px;overflow:hidden;background:#f3f5fa">
+ <div style="position:absolute;left:50%;top:24px;width:150px;height:38px;margin-left:-75px;border-radius:20px;background:#0d1426"></div>
+ <div style="padding:100px 36px 0;text-align:center"><div style="width:200px;height:200px;margin:0 auto;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(20,33,94,.12)"><img src="assets/logo-light.png" style="width:170px"></div><div style="font-size:42px;font-weight:800;color:#14215e;margin-top:20px">Djam's Real Estate</div><div style="font-size:24px;color:#7a86a8;font-weight:600;margin-top:4px">Impérial Gestion</div></div>
+ <div class="pc" style="margin:30px 30px 0;padding:22px 26px;border-radius:28px;background:#fff;display:flex;align-items:center;gap:18px;box-shadow:0 8px 20px rgba(20,33,94,.08)"><span style="width:66px;height:66px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;flex:none"><svg width="38" height="38" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm4.6 13.4c-.2.6-1.2 1.2-1.7 1.2-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.6-1.1-4.3-3.8-4.4-4-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.1.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.5 1.9 1 .9 1.9 1.2 2.2 1.3.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg></span><div><div style="font-size:20px;letter-spacing:3px;color:#7a86a8;font-weight:600">WHATSAPP · APPEL</div><div style="font-size:38px;font-weight:800;color:#14215e;white-space:nowrap">(+237) 690 54 61 11</div></div></div>
+ <div class="pc" style="margin:16px 30px 0;padding:22px 26px;border-radius:28px;background:#fff;display:flex;align-items:center;gap:18px;box-shadow:0 8px 20px rgba(20,33,94,.08)"><span style="font-size:50px">✉️</span><div style="font-size:34px;font-weight:800;color:#14215e">dreigsarl@gmail.com</div></div>
+ <div class="pc" style="margin:16px 30px 0;display:flex;gap:14px"><div class="pa" style="flex:1;padding:22px;border-radius:24px;background:#e8f0ff;color:#1f7fe0;font-size:28px;font-weight:800;text-align:center">Acheter un terrain</div><div class="pa" style="flex:1;padding:22px;border-radius:24px;background:#fef3c7;color:#92400e;font-size:28px;font-weight:800;text-align:center">Vendre avec TF</div></div>
+ <div class="pc" style="margin:24px 30px 0;padding:26px;border-radius:999px;background:#1f7fe0;color:#fff;font-size:34px;font-weight:800;text-align:center">Accompagnement personnalisé</div>
+</div></div>`);
+const PC=[...ph.querySelectorAll('.pc')];
+const share=H(`<div class="abs pill" style="background:#14215e;color:#fff;font-size:40px"><img src="${E('1f501')}">Partagez · Merci !</div>`);
+
+/* ===== S11 end (navy) ===== */
+const endLogo=H('<img class="abs" src="assets/logo-dark.png" style="width:600px">');
+const sl1=H('<div class="abs" style="font-weight:800;font-size:72px;color:#fff;white-space:nowrap;letter-spacing:-1px"><span class="w">Bâtir</span> <span class="w">aujourd\'hui…</span></div>');
+const sl2=H('<div class="abs" style="font-family:P;font-style:italic;font-weight:700;font-size:68px;color:#fff;white-space:nowrap"><span class="w">impacter</span> <span class="w">pour</span> <span class="w" style="color:#7fa6ff">l\'éternité.</span></div>');
+const endC=H('<div class="abs" style="text-align:center;white-space:nowrap"><div style="display:inline-flex;align-items:center;gap:16px;padding:18px 36px;border-radius:999px;background:#25d366;color:#fff;font-size:44px;font-weight:800">WhatsApp · (+237) 690 54 61 11</div><div style="font-size:32px;font-weight:600;color:#c7d4ff;margin-top:20px">dreigsarl@gmail.com</div></div>');
+
+/* ---------- reactions, bursts ---------- */
+const REACTS=[['1f929',F('exclusive')+.1,330,-720],['1f440',F('attention')-.1,-330,-720],['1f4cd',F('Perle'),330,-720],['1f525',F('20 m'),-330,-720],['2705',F('exploitable'),330,-720],['1f4b0',F('70 000')+.5,330,-760],['1f91d',F('accompagnement'),330,-760]].map(([em,t0,x,y])=>{const e=document.createElement('div');e.className='abs react';e.innerHTML=`<div class="ring"></div><img src="${E(em)}">`;$('rx').appendChild(e);return {e,t0,x,y,ring:e.querySelector('.ring')}});
+const BURSTS=[[.75,0,-60],[F('2 000'),0,330],[F('2 000',2),0,-320],[F('70 000'),0,40],[F('Exclusivité'),0,300],[F('opportunités'),0,160]].map(([t0,x,y],k)=>{const e=document.createElement('div');e.className='burst';e.innerHTML=Array.from({length:12},()=>'<i></i>').join('');$('bursts').appendChild(e);return {e,t0,x,y,k}});
+
+/* ---------- after-effects ---------- */
+const GR=[];{const r=rnd(21);for(let k=0;k<4;k++){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d'),d=x.createImageData(256,256);for(let i=0;i<d.data.length;i+=4){const v=r()*255|0;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255}x.putImageData(d,0,0);GR.push(c.toDataURL())}}
+const CUTS=[7.25,13.75,20.35,31.3,38.25,52.6,62.2,67.6,72.05,84.3], FLARES=[.75,F('2 000'),F('70 000'),F('opportunités'),84.5];
+function fx(t){const f=Math.floor(t*30);$('grain').style.backgroundImage=`url(${GR[f%4]})`;$('grain').style.backgroundPosition=`${(f*137)%256}px ${(f*71)%256}px`;
+  let lk=0,lx=0;CUTS.forEach(a=>{const d=p(t,a-.3,a+.7);if(d>0&&d<1){lk=Math.max(lk,Math.sin(d*Math.PI));lx=lerp(-25,25,d)}});$('leak').style.opacity=lk*.4;$('leak').style.transform=`translateX(${lx}%)`;
+  let fl=0;FLARES.forEach(a=>{const d=t-a;if(d>0&&d<.7)fl=Math.max(fl,1-d/.7)});$('flare').style.opacity=fl*.85;$('flare').style.transform=`scaleX(${.2+1.4*(1-fl)}) scaleY(${.5+fl})`;
+  let ca=0;[...CUTS,.75].forEach(a=>{const d=Math.abs(t-a);if(d<.22)ca=Math.max(ca,9*(1-d/.22))});
+  if(ca>.6){$('world').style.filter='url(#ca)';$('caR').setAttribute('dx',ca);$('caB').setAttribute('dx',-ca)}else $('world').style.filter='none';
+  $('flash').style.opacity=.85*Math.max(p(t,.7,.75)*(1-p(t,.75,1.1)),p(t,F('70 000')-.05,F('70 000'))*(1-p(t,F('70 000'),F('70 000')+.4))*.6);
+  BURSTS.forEach(b=>{const l=t-b.t0;if(l<0||l>.55){b.e.style.visibility='hidden';return}b.e.style.visibility='visible';b.e.style.transform=`translate(${CX+b.x}px,${CY+b.y}px) rotate(${b.k*17}deg)`;const q=eo(l/.55);
+    [...b.e.children].forEach((i,j)=>{i.style.height=(36*(1-q)+6)+'px';i.style.transform=`rotate(${j*30}deg) translateY(${90+150*q}px)`;i.style.opacity=1-q})});
+  REACTS.forEach(r=>{const l=t-r.t0;if(l<0||l>1.4){r.e.style.visibility='hidden';return}const i=back(p(l,0,.4)),o=ei(p(l,1.0,1.4));
+    set(r.e,{x:r.x,y:r.y-l*25-o*50,s:i,rz:Math.sin(l*9)*12*Math.exp(-l*2.2),o:cl(l*8)*(1-o)});r.ring.style.transform=`scale(${.6+p(l,0,.6)*1.1})`;r.ring.style.opacity=(1-p(l,0,.6))*.9});
+  $('bar').style.width=(100*p(t,0,window.DURATION))+'%';
+}
+
+const subs=$('subs'); let curG=-1;
+const SUB_HIDE=[[0,1.55],[84.4,99]];
+const BG={navy:[[7.25,13.75],[52.6,62.2],[84.3,99]],light:[[38.25,52.6],[62.2,67.6],[72.05,84.3]]};
+window.READY=Promise.all(loads).then(()=>document.fonts.ready);
+
+window.render=function(t){
+  for(const [k,wins] of Object.entries(BG)){let o=0;wins.forEach(([a,b])=>{o=Math.max(o,p(t,a-.2,a+.2)*(1-p(t,b-.2,b+.2)))});$('L_'+k).style.opacity=o;$('L_'+k).style.visibility=o>0?'visible':'hidden'}
+  footage(t);
+  let sh=0;[[.75,.45,22],[F('70 000'),.45,12],[F('Exclusivité'),.4,14]].forEach(([a,d,amp])=>{if(t>a&&t<a+d)sh+=amp*(1-(t-a)/d)});
+  $('world').style.transform=sh?`translate(${Math.sin(t*93)*sh}px,${Math.cos(t*71)*sh}px)`:'none';
+
+  /* HOOK */
+  { const L=life(t,.05,1.6,.25,.3); set(hkTop,{y:-640,o:L.on?L.i*(1-L.o):0,bl:L.o*10});
+    const B=life(t,.15,1.62,.35,.3); set(hkBig,{y:-120,s:lerp(1.8,1,eo(p(t,.15,.5)))*(1-B.o*.2),o:B.on?cl(p(t,.15,.25))*(1-B.o):0,bl:B.o*16+(1-p(t,.15,.4))*10});
+    $('hkN').textContent=fmt(2000*eo(p(t,.15,.65)));
+    const q=p(t,.72,.88); set(hkStamp,{y:300,rz:-9,s:lerp(2.6,1,ei(q)),o:(t>.72?1:0)*(1-ei(p(t,1.35,1.62))),bl:(1-q)*8}); }
+
+  /* S1 */
+  { const A=life(t,1.6,7.2,.3,.35); set(h1,{y:-620,o:A.on?(1-A.o):0,bl:A.o*12}); words(h1,t,[F('Opportunité'),F('foncière'),F('exclusive')]);
+    pop(pinY,t,F('Yassa'),7.2,{y:-380});
+    const M=life(t,F('2 000')-.1,7.2,.45,.35); set(m2b,{y:180,s:cl(back(p(t,F('2 000')-.1,F('2 000')+.35)),0,2)*(1-M.o*.1),o:M.on?cl(p(t,F('2 000')-.1,F('2 000')))*(1-M.o):0,bl:M.o*10});
+    $('m2a').textContent=fmt(2000*eo(p(t,F('2 000'),F('2 000')+.6)));
+    pop(hg,t,F('environnement')-.05,7.2,{y:380}); }
+
+  /* S2 */
+  { const A=life(t,7.3,11.15,.3,.35); set(h2,{y:-440,o:A.on?(1-A.o):0,bl:A.o*12}); words(h2,t,[F('emplacement')-.15,F('emplacement'),F('stratégique')]);
+    const B=life(t,8.9,11.15,.3,.35); set(h2b,{y:-120,o:B.on?(1-B.o):0,bl:B.o*12}); words(h2b,t,[F('pour'),F('pour')+.14,F('projet'),F('immobilier'),F('de',2),F('standing'),F('à',2),F('Douala')]);
+    std(att,t,F('Cette')-.05,13.7,{y:-180,dy:60,s0:.8}); }
+
+  /* S3 location */
+  { std(locT,t,F('Localisation'),20.3,{y:-780,dy:30});
+    const M=life(t,F('Yassa',2)-.15,20.3,.55,.4); set(map,{y:-240,rx:(1-M.i)*20,o:M.on?M.i*(1-M.o):0,bl:M.o*12,s:lerp(.9,1,M.i)});
+    const d=eo(p(t,F('Yassa',2),F('Yassa',2)+.4)); map.querySelector('#mpin').style.transform=`translateY(${(1-d)*-400-Math.abs(Math.sin(p(t,F('Yassa',2)+.4,F('Yassa',2)+.8)*Math.PI))*24}px)`;
+    map.querySelector('#lot').style.strokeDashoffset=700*(1-eo(p(t,F('derrière'),F('derrière')+.8)));
+    const dist=map.querySelector('#dist'); dist.style.opacity=p(t,F('500 m'),F('500 m')+.2); dist.style.strokeDashoffset=-t*40;
+    [['#mtA',F('derrière')],['#mtB',F('500 m')],['#mtC',F('carrefour')]].forEach(([id,a])=>{const e=map.querySelector(id);e.style.transform=`scale(${cl(back(p(t,a,a+.4)),0,2)})`;e.style.opacity=p(t,a,a+.1)}); }
+
+  /* S4 superficie / façade */
+  { const A=life(t,F('Superficie')-.05,26.3,.45,.4); set(m2c,{y:-560,o:A.on?A.i*(1-A.o):0,s:lerp(1.3,1,A.i),bl:A.o*12}); $('m2b').textContent=fmt(2000*eo(p(t,F('2 000',2),F('2 000',2)+.6)));
+    pop(res,t,F('résidentiel')-.05,26.3,{y:-330});
+    const B=life(t,F('double')-.2,31.25,.55,.4); set(fac,{y:-240,rx:(1-B.i)*25,o:B.on?B.i*(1-B.o):0,bl:B.o*12});
+    plt.style.strokeDashoffset=1700*(1-eo(p(t,F('double'),F('double')+.8)));
+    lA.style.opacity=p(t,F('principale'),F('principale')+.2); lB.style.opacity=p(t,F('seconde'),F('seconde')+.2); }
+
+  /* S5 relief */
+  { REL.forEach((r,k)=>{const L=life(t,r.t0-.08,F('Possibilité')-.1,.4,.3);set(r.e,{x:-120+(1-L.i)*-160,y:-620+k*130,o:L.on?L.i*(1-L.o):0,bl:L.o*10})});
+    const L=life(t,F('Possibilité')-.1,38.2,.5,.35); set(lots,{y:-330,o:L.on?L.i*(1-L.o):0,s:lerp(.9,1,L.i),bl:L.o*10});
+    LT.forEach((e,i)=>{const a=F('morcellement')+i*.18;const q=back(p(t,a,a+.35));e.style.transform=`scale(${cl(q,0,2)})`;e.style.opacity=p(t,a,a+.1)}); }
+
+  /* S6 idéal pour */
+  { const A=life(t,38.35,41.8,.3,.35); set(h6,{y:-140,o:A.on?(1-A.o):0,bl:A.o*12}); words(h6,t,[F('emplacement',2),F('configuration')-.1,F('configuration'),F('accessibilité')]);
+    const B=life(t,41.85,52.55,.3,.4); set(h6b,{y:-640,o:B.on?(1-B.o):0,bl:B.o*12}); words(h6b,t,[F('idéal'),F('idéal')+.2]);
+    IDL.forEach(c=>{const L=life(t,c.t0-.1,52.55,.45,.4);set(c.e,{x:c.x,y:c.y+(1-L.i)*60,s:cl(back(p(t,c.t0-.1,c.t0+.3)),0,2)*(1-L.o*.1),o:L.on?cl(p(t,c.t0-.1,c.t0))*(1-L.o):0,bl:L.o*10});
+      c.e.style.boxShadow=t>c.t0&&t<c.t0+.9?`0 0 0 6px rgba(31,127,224,${1-p(t,c.t0+.3,c.t0+.9)}),0 30px 80px rgba(10,20,60,.2)`:''}); }
+
+  /* S7 price */
+  { std(prL,t,F('Prix'),62.15,{y:-640,dy:30});
+    const P=life(t,F('70 000')-.1,F('Exclusivité')-.15,.45,.35); set(prC,{y:-360,s:cl(back(p(t,F('70 000')-.1,F('70 000')+.35)),0,2)*(1-P.o*.1),o:P.on?cl(p(t,F('70 000')-.1,F('70 000')))*(1-P.o):0,bl:P.o*10});
+    $('pn').textContent=fmt(70000*eo(p(t,F('70 000'),F('70 000')+.7))); $('pm').style.opacity=p(t,F('m²',4)-.05,F('m²',4)+.1);
+    pop(notaire,t,F('Transaction')-.05,F('Exclusivité')-.15,{y:-80});
+    const q=p(t,F('Exclusivité'),F('Exclusivité')+.16); set(exclu,{y:-200,rz:-8,s:lerp(2.4,1,ei(q)),o:(t>F('Exclusivité')?1:0)*(1-ei(p(t,61.8,62.15))),bl:(1-q)*6});
+    pop(comm,t,F('Frais')-.05,62.15,{y:60}); }
+
+  /* S8 brand */
+  { std(brLogo,t,62.3,67.55,{y:-560,dy:40}); const A=life(t,F('on',1)-.1,67.55,.3,.35); set(br1,{y:-180,o:A.on?(1-A.o):0,bl:A.o*10}); words(br1,t,[F('on',1),F('ne'),F('vend'),F('pas',1),F('seulement'),F('terrains')-.16,F('terrains')]);
+    const B=life(t,F('crée')-.25,67.55,.3,.35); set(br2,{y:130,o:B.on?(1-B.o):0,bl:B.o*10,s:1+.03*p(t,F('crée'),67.5)}); words(br2,t,[F('crée')-.15,F('crée'),F('crée')+.15,F('opportunités')]); }
+
+  /* S9 adresse */
+  { const L=life(t,67.7,72.0,.5,.4); set(adr,{y:-560,o:L.on?L.i*(1-L.o):0,s:lerp(1.1,1,L.i),bl:(1-L.i)*10+L.o*10}); }
+
+  /* S10 contact */
+  { const P=life(t,72.15,84.25,.6,.4); set(ph,{s:.9,y:-170+(1-P.i)*500,o:P.on?P.i*(1-P.o):0,bl:P.o*12,rx:(1-P.i)*15});
+    const pt=[72.6,73.2,F("l'acquisition"),F('accompagnement')]; PC.forEach((c,k)=>{const q=eo(p(t,pt[k],pt[k]+.4));c.style.opacity=q;c.style.transform=`translateY(${(1-q)*30}px)`});
+    const pa=ph.querySelectorAll('.pa'); pa[0].style.boxShadow=t>F("l'acquisition")&&t<F("l'acquisition")+1?'0 0 0 5px #1f7fe0':''; pa[1].style.boxShadow=t>F('vente',2)&&t<F('vente',2)+1?'0 0 0 5px #f59e0b':'';
+    pop(share,t,F('partager'),84.25,{y:400}); }
+
+  /* S11 end */
+  { const fin=1-p(t,90.4,91); const q=eo(p(t,84.35,85.2));
+    set(endLogo,{y:-400,s:lerp(.7,1,q)*(1+.01*Math.sin(t*1.4)),o:q*fin,bl:(1-q)*16});
+    set(sl1,{y:0,o:(t>84.4?1:0)*fin}); set(sl2,{y:100,o:(t>85.6?1:0)*fin});
+    words(sl1,t,[F('Bâtir'),F('aujourd')]); words(sl2,t,[F('impacter'),F('impacter')+.45,F("l'éternité")]);
+    set(endC,{y:330,o:eo(p(t,87.0,87.6))*fin,s:lerp(.9,1,eo(p(t,87,87.6)))}); }
+
+  fx(t);
+  let g=-1;for(let k=0;k<G.length;k++){const a=W[G[k][0]][1]-.06,b=k+1<G.length?Math.min(W[G[k+1][0]][1]-.06,W[G[k].at(-1)][2]+.5):W[G[k].at(-1)][2]+.6;if(t>=a&&t<b){g=k;break}}
+  if(SUB_HIDE.some(([a,b])=>t>a&&t<b))g=-1;
+  if(g!==curG){curG=g;subs.innerHTML=g<0?'':G[g].map(i=>`<span>${W[i][0]}</span>`).join(' ')}
+  if(g>=0){const gs=W[G[g][0]][1]-.06;const gi=back(p(t,gs,gs+.22));subs.style.opacity=1;subs.style.transform=`scale(${cl(gi,0,1.2)}) rotate(${(g%2?1:-1)*1}deg)`;
+    [...subs.children].forEach((sp,j)=>{const w=W[G[g][j]];const act=t>=w[1]-.03;const cur=act&&(j==G[g].length-1||t<W[G[g][j+1]][1]-.03);
+      sp.style.color=cur?'#f5c451':'#fff';sp.style.transform=`scale(${cur?1+.1*cl(back(p(t,w[1]-.03,w[1]+.18)),0,1.3):1})`;sp.style.opacity=act?1:.55})}
+  else subs.style.opacity=0;
+};
+</script>
+</body>
+</html>
